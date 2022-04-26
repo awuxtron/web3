@@ -15,9 +15,9 @@ class BigNumber implements CastsAttributes
      * @param mixed        $value
      * @param array<mixed> $attributes
      *
-     * @return \Brick\Math\BigNumber
+     * @return null|\Brick\Math\BigNumber
      */
-    public function get($model, string $key, $value, array $attributes): \Brick\Math\BigNumber
+    public function get($model, string $key, $value, array $attributes): ?\Brick\Math\BigNumber
     {
         if (empty($value)) {
             return $value;

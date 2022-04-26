@@ -16,9 +16,9 @@ class Hex implements CastsAttributes
      * @param mixed        $value
      * @param array<mixed> $attributes
      *
-     * @return HexUtil
+     * @return null|HexUtil
      */
-    public function get($model, string $key, $value, array $attributes): HexUtil
+    public function get($model, string $key, $value, array $attributes): ?HexUtil
     {
         if (empty($value)) {
             return $value;
