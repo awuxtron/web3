@@ -20,12 +20,23 @@ class Web3ServiceProvider extends ServiceProvider
             $provider = config('web3.provider');
             $rpcUrl = config('web3.rpc_url');
 
+            if (empty($rpcUrl)) {
+                return null;
+            }
+
             // @phpstan-ignore-next-line
             return new Web3(new $provider($rpcUrl));
         });
 
         $this->app->singleton('web3.multicall', function () {
-            return new Multicall($this->app->get('web3'), config('web3.multicall.address'), config('web3.multicall.try_aggregate'));
+            $web3 = $this->app->get('web3');
+            $address = config('web3.multicall.address');
+
+            if (empty($web3) || empty($address)) {
+                return null;
+            }
+
+            return new Multicall($web3, $address, config('web3.multicall.try_aggregate'));
         });
     }
 
