@@ -20,6 +20,10 @@ class Hex implements CastsAttributes
      */
     public function get($model, string $key, $value, array $attributes): HexUtil
     {
+        if (empty($value)) {
+            return $value;
+        }
+
         return HexUtil::of($value);
     }
 
@@ -35,6 +39,10 @@ class Hex implements CastsAttributes
      */
     public function set($model, string $key, $value, array $attributes): string
     {
+        if (empty($value)) {
+            return $value;
+        }
+
         return HexUtil::of($value)->lower()->prefixed();
     }
 }

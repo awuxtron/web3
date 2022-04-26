@@ -19,6 +19,10 @@ class BigNumber implements CastsAttributes
      */
     public function get($model, string $key, $value, array $attributes): \Brick\Math\BigNumber
     {
+        if (empty($value)) {
+            return $value;
+        }
+
         return \Brick\Math\BigNumber::of($value);
     }
 
@@ -34,6 +38,10 @@ class BigNumber implements CastsAttributes
      */
     public function set($model, string $key, $value, array $attributes): string
     {
+        if (empty($value)) {
+            return $value;
+        }
+
         return (string) \Brick\Math\BigNumber::of($value);
     }
 }
