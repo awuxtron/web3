@@ -1,0 +1,9 @@
+.idea
+.vscode
+.php-cs-fixer.cache
+.php-cs-fixer.dist.php
+composer.lock
+vendor
+test.php
+test.json
+test.js

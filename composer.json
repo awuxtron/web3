@@ -1,0 +1,76 @@
+{
+    "name": "awuxtron/web3",
+    "description": "The Ethereum API Client For PHP.",
+    "homepage": "https://github.com/awuxtron/web3",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Diep Dang",
+            "email": "awuxtron@gmail.com",
+            "homepage": "https://awuxtron.me"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "ext-ctype": "*",
+        "brick/math": "^0.9.3",
+        "guzzlehttp/guzzle": "^7.4",
+        "kornrunner/keccak": "^1.1",
+        "psr/http-message": "^1.0",
+        "simplito/elliptic-php": "^1.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.8",
+        "illuminate/contracts": "^9.0",
+        "illuminate/database": "^9.0",
+        "illuminate/support": "^9.0",
+        "orchestra/testbench": "^7.2",
+        "pestphp/pest": "^1.21",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^1.5",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-strict-rules": "^1.1",
+        "roave/security-advisories": "dev-latest",
+        "spaze/phpstan-disallowed-calls": "^2.3",
+        "symfony/var-dumper": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Awuxtron\\Web3\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Awuxtron\\Web3\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "lint": "vendor/bin/php-cs-fixer fix -v --allow-risky=yes --dry-run",
+        "format": "vendor/bin/php-cs-fixer fix -v --allow-risky=yes",
+        "test": "vendor/bin/pest"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Awuxtron\\Web3\\Web3ServiceProvider"
+            ],
+            "aliases": {
+                "Web3": "Awuxtron\\Web3\\Facades\\Web3",
+                "Multicall": "Awuxtron\\Web3\\Facades\\Multicall"
+            }
+        }
+    }
+}

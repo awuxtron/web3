@@ -1,0 +1,10 @@
+parameters:
+    level: 8
+    paths:
+        - src
+
+    checkMissingIterableValueType: true
+    reportUnmatchedIgnoredErrors: true
+    ignoreErrors:
+        - '#Construct empty\(\) is not allowed. Use more strict comparison.#'
+        - '#Short ternary operator is not allowed. Use null coalesce operator if applicable or consider using long ternary.#'
