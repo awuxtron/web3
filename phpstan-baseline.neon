@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Cannot call method value\\(\\) on array\\|Awuxtron\\\\Web3\\\\Methods\\\\Eth\\\\Call\\.$#"
+			count: 1
+			path: src/Contracts/Method.php
+
