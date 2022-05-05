@@ -3,6 +3,7 @@
 namespace Awuxtron\Web3\Utils;
 
 use Brick\Math\BigDecimal;
+use Brick\Math\BigInteger;
 use Brick\Math\BigNumber;
 use InvalidArgumentException;
 
@@ -45,50 +46,54 @@ class Ether
      * Convert number from Wei to unit.
      *
      * @param BigNumber|float|int|string $number
-     * @param string                     $unit
+     * @param mixed                      $unit
      *
-     * @return BigNumber
+     * @return BigDecimal
      */
-    public static function fromWei(BigNumber|string|int|float $number, string $unit = 'ether'): BigNumber
+    public static function fromWei(BigNumber|string|int|float $number, mixed $unit = 'ether'): BigDecimal
     {
         $unitValue = self::getUnitValue($unit);
 
         if ($unitValue->isZero()) {
-            return BigNumber::of(0);
+            return BigDecimal::of(0);
         }
 
         return BigDecimal::of($number)->exactlyDividedBy($unitValue);
     }
 
     /**
-     * Get value of the unit in Wei.
-     *
-     * @param string $unit
-     *
-     * @return BigNumber
-     */
-    public static function getUnitValue(string $unit = 'ether'): BigNumber
-    {
-        $unit = strtolower($unit);
-
-        if (!array_key_exists($unit, self::UNITS)) {
-            throw new InvalidArgumentException("The unit '{$unit}' does not exist.");
-        }
-
-        return BigNumber::of(self::UNITS[$unit]);
-    }
-
-    /**
      * Convert number to Wei by unit.
      *
      * @param BigNumber|float|int|string $number
-     * @param string                     $unit
+     * @param mixed                      $unit
      *
-     * @return BigNumber
+     * @return BigDecimal
      */
-    public static function toWei(BigNumber|string|int|float $number, string $unit = 'ether'): BigNumber
+    public static function toWei(BigNumber|string|int|float $number, mixed $unit = 'ether'): BigDecimal
     {
         return BigDecimal::of($number)->multipliedBy(self::getUnitValue($unit))->stripTrailingZeros();
+    }
+
+    /**
+     * Get value of the unit in Wei.
+     *
+     * @param mixed $unit
+     *
+     * @return BigInteger
+     */
+    public static function getUnitValue(mixed $unit = 'ether'): BigInteger
+    {
+        if (is_string($unit)) {
+            $unit = strtolower($unit);
+        } else {
+            $unit = self::getUnitByValue($unit);
+        }
+
+        if (!array_key_exists($unit, self::UNITS)) {
+            $unit = self::getUnitByValue($unit);
+        }
+
+        return BigInteger::of(self::UNITS[$unit]);
     }
 
     /**
