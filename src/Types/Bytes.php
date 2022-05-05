@@ -41,6 +41,10 @@ class Bytes extends EthereumType
             return !$throw ? false : throw new InvalidArgumentException('Invalid hex string.');
         }
 
+        if (!empty($this->bytes) && Hex::of($value)->length() != $this->bytes) {
+            return !$throw ? false : throw new InvalidArgumentException('Invalid bytes size.');
+        }
+
         return true;
     }
 
