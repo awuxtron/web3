@@ -4,9 +4,11 @@ namespace Awuxtron\Web3\Contracts;
 
 use Awuxtron\Web3\ABI\Coder;
 use Awuxtron\Web3\ABI\Fragments\FunctionFragment;
+use Awuxtron\Web3\Methods\Eth\Call;
 use Awuxtron\Web3\Types\Block;
 use Awuxtron\Web3\Types\EthereumType;
 use Awuxtron\Web3\Utils\Hex;
+use Awuxtron\Web3\Web3;
 use InvalidArgumentException;
 
 class Method
@@ -47,13 +49,27 @@ class Method
      */
     public function call(array $options = [], mixed $block = Block::LATEST): mixed
     {
-        $result = $this->contract->getWeb3()->eth()->call(array_merge($options, [
-            'to' => $this->contract->getAddress(),
-            'data' => $this->getEncodedData(),
-        ]), $block);
+        $result = $this->getRequest($this->getContract()->getWeb3()->setExpectsRequest(false), $options, $block);
 
         // Decode call result.
         return $this->decode((string) $result->value());
+    }
+
+    /**
+     * Get the method request.
+     *
+     * @param Web3         $web3
+     * @param array<mixed> $options
+     * @param mixed        $block
+     *
+     * @return array<mixed>|Call
+     */
+    public function getRequest(Web3 $web3, array $options = [], mixed $block = Block::LATEST): Call|array
+    {
+        return $web3->eth()->call(array_merge($options, [
+            'to' => $this->contract->getAddress(),
+            'data' => $this->getEncodedData(),
+        ]), $block);
     }
 
     /**
