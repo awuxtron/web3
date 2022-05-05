@@ -81,7 +81,13 @@ class Method
      */
     public function getEncodedData(): Hex
     {
-        return $this->fragment->getSignature()->append(Coder::encode($this->types, $this->args));
+        $signature = $this->fragment->getSignature();
+
+        if (!empty($this->types)) {
+            $signature = $signature->append(Coder::encode($this->types, $this->args));
+        }
+
+        return $signature;
     }
 
     /**
