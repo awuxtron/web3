@@ -47,6 +47,10 @@ class Transaction extends EthereumType
             return !$throw ? false : throw new InvalidArgumentException('The parameter "gasPrice" must be a valid number.');
         }
 
+        if (array_key_exists('nonce', $value) && !(new Integer)->validate($value['nonce'], false)) {
+            return !$throw ? false : throw new InvalidArgumentException('The parameter "nonce" must be a valid number.');
+        }
+
         if (array_key_exists('value', $value) && !(new Integer)->validate($value['value'], false)) {
             return !$throw ? false : throw new InvalidArgumentException('The parameter "value" must be a valid number.');
         }
@@ -84,6 +88,10 @@ class Transaction extends EthereumType
 
         if (array_key_exists('gasPrice', $value)) {
             $value['gasPrice'] = Hex::fromInteger($value['gasPrice'])->prefixed();
+        }
+
+        if (array_key_exists('nonce', $value)) {
+            $value['nonce'] = Hex::fromInteger($value['nonce'])->prefixed();
         }
 
         if (array_key_exists('value', $value)) {
