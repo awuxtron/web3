@@ -3,6 +3,7 @@
 namespace Awuxtron\Web3\Methods;
 
 use Awuxtron\Web3\JsonRPC\Response;
+use InvalidArgumentException;
 
 abstract class Method
 {
@@ -51,5 +52,23 @@ abstract class Method
     public function value(): mixed
     {
         return $this->raw();
+    }
+
+    /**
+     * Check required arguments.
+     *
+     * @param array<mixed> $params
+     * @param int          $count
+     */
+    protected static function requiredArgs(array $params, int $count): void
+    {
+        if (($provided = count($params)) != $count) {
+            throw new InvalidArgumentException(sprintf(
+                'Method %s expects %d parameters, %d provided.',
+                static::getName(),
+                $count,
+                $provided
+            ));
+        }
     }
 }
