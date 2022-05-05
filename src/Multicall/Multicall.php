@@ -32,11 +32,16 @@ class Multicall
      */
     public function call(array $methods, array $options = [], mixed $block = Block::LATEST): array
     {
+        $keys = array_keys($methods);
+        $methods = array_values($methods);
+
         if ($this->tryAggregate) {
-            return $this->tryBlockAndAggregate($methods, $options, $block);
+            $result = $this->tryBlockAndAggregate($methods, $options, $block);
+        } else {
+            $result = $this->aggregate($methods, $options, $block);
         }
 
-        return $this->aggregate($methods, $options, $block);
+        return array_combine($keys, $result);
     }
 
     /**
