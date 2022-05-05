@@ -1,7 +1,9 @@
 <?php
 
+use Awuxtron\Web3\Utils\Ether;
 use Awuxtron\Web3\Utils\Hex;
 use Awuxtron\Web3\Utils\Sha3;
+use Brick\Math\BigDecimal;
 use Brick\Math\BigInteger;
 
 if (!function_exists('sha3')) {
@@ -50,5 +52,35 @@ if (!function_exists('explode_top_level')) {
         $replacer = static fn ($matches) => $matches[0] === $separator ? $tmp : $matches[0];
 
         return explode($tmp, (string) preg_replace_callback("/({$separator})|\\((((?>[^()]+)|(?R))*)\\)/", $replacer, $string), $limit);
+    }
+}
+
+if (!function_exists('from_wei')) {
+    /**
+     * Convert number from Wei to unit.
+     *
+     * @param mixed $number
+     * @param mixed $unit
+     *
+     * @return BigDecimal
+     */
+    function from_wei(mixed $number, mixed $unit = 'ether'): BigDecimal
+    {
+        return Ether::fromWei($number, $unit);
+    }
+}
+
+if (!function_exists('to_wei')) {
+    /**
+     * Convert number to Wei by unit.
+     *
+     * @param mixed $number
+     * @param mixed $unit
+     *
+     * @return BigDecimal
+     */
+    function to_wei(mixed $number, mixed $unit = 'ether'): BigDecimal
+    {
+        return Ether::toWei($number, $unit);
     }
 }
