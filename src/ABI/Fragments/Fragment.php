@@ -4,6 +4,7 @@ namespace Awuxtron\Web3\ABI\Fragments;
 
 use Awuxtron\Web3\ABI\FormatTypes;
 use Awuxtron\Web3\ABI\ParamType;
+use Awuxtron\Web3\Exceptions\UnsupportedFragmentException;
 use Awuxtron\Web3\Types\EthereumType;
 use InvalidArgumentException;
 use JsonSerializable;
@@ -116,6 +117,8 @@ abstract class Fragment implements JsonSerializable
      *
      * @param array<mixed>|string $input
      *
+     * @throws UnsupportedFragmentException
+     *
      * @return Fragment
      */
     public static function from(string|array $input): Fragment
@@ -135,7 +138,8 @@ abstract class Fragment implements JsonSerializable
             'constructor' => ConstructorFragment::from($input),
             'error' => ErrorFragment::from($input),
             'event' => EventFragment::from($input),
-            default => FunctionFragment::from($input),
+            'function' => FunctionFragment::from($input),
+            default => throw new UnsupportedFragmentException("The fragment type: {$type} is not supported."),
         };
     }
 
