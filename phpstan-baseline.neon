@@ -5,3 +5,13 @@ parameters:
 			count: 1
 			path: src/Contracts/Method.php
 
+		-
+			message: "#^Variable method call on \\$this\\(Awuxtron\\\\Web3\\\\Web3\\)\\.$#"
+			count: 1
+			path: src/Web3.php
+
+		-
+			message: "#^Variable method call on mixed\\.$#"
+			count: 1
+			path: src/Web3.php
+

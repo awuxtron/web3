@@ -63,6 +63,14 @@ class Web3
      */
     public function __call(string $name, array $arguments)
     {
+        if (str_contains($name, '_')) {
+            [$namespace, $method] = explode('_', $name);
+
+            if (array_key_exists($namespace, static::$namespaces)) {
+                return $this->{$namespace}()->{$method}($arguments);
+            }
+        }
+
         if (array_key_exists($name, static::$namespaces)) {
             $web3 = clone $this;
             $web3->methodNamespace = $name;
