@@ -84,7 +84,7 @@ class Method
         $decoded = Coder::decode($this->fragment->getOutputTypes(), $result);
 
         if (count($decoded) == 1) {
-            return $decoded[0];
+            return array_shift($decoded);
         }
 
         return $decoded;
