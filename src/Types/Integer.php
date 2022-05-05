@@ -60,6 +60,18 @@ class Integer extends EthereumType
     }
 
     /**
+     * Validate and return validated value.
+     *
+     * @param mixed $value
+     *
+     * @return BigInteger
+     */
+    public function validated(mixed $value): BigInteger
+    {
+        return BigInteger::of(parent::validated($value));
+    }
+
+    /**
      * Encodes value to its ABI representation.
      */
     public function encode(mixed $value, bool $validate = true): Hex

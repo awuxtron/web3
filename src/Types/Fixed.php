@@ -71,6 +71,18 @@ class Fixed extends EthereumType
     }
 
     /**
+     * Validate and return validated value.
+     *
+     * @param mixed $value
+     *
+     * @return BigDecimal
+     */
+    public function validated(mixed $value): BigDecimal
+    {
+        return BigDecimal::of(parent::validated($value));
+    }
+
+    /**
      * Encodes value to its ABI representation.
      */
     public function encode(mixed $value, bool $validate = true): Hex

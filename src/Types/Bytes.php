@@ -45,6 +45,18 @@ class Bytes extends EthereumType
     }
 
     /**
+     * Validate the value and return the valid hex object.
+     *
+     * @param mixed $value
+     *
+     * @return Hex
+     */
+    public function validated(mixed $value): Hex
+    {
+        return Hex::of(parent::validated($value));
+    }
+
+    /**
      * Encodes value to its ABI representation.
      */
     public function encode(mixed $value, bool $validate = true): Hex
