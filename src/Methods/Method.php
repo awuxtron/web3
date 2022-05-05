@@ -62,7 +62,7 @@ abstract class Method
      */
     protected static function requiredArgs(array $params, int $count): void
     {
-        if (($provided = count($params)) != $count) {
+        if (($provided = count($params)) < $count) {
             throw new InvalidArgumentException(sprintf(
                 'Method %s expects %d parameters, %d provided.',
                 static::getName(),

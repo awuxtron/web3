@@ -1,7 +1,7 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Cannot call method value\\(\\) on array\\|Awuxtron\\\\Web3\\\\Methods\\\\Eth\\\\Call\\.$#"
+			message: "#^Variable method call on Awuxtron\\\\Web3\\\\Methods\\\\Eth\\.$#"
 			count: 1
 			path: src/Contracts/Method.php
 

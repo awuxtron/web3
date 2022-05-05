@@ -4,11 +4,11 @@ namespace Awuxtron\Web3\Contracts;
 
 use Awuxtron\Web3\ABI\Coder;
 use Awuxtron\Web3\ABI\Fragments\FunctionFragment;
-use Awuxtron\Web3\Methods\Eth\Call;
 use Awuxtron\Web3\Types\Block;
 use Awuxtron\Web3\Types\EthereumType;
 use Awuxtron\Web3\Utils\Hex;
 use Awuxtron\Web3\Web3;
+use Brick\Math\BigInteger;
 use InvalidArgumentException;
 
 class Method
@@ -49,27 +49,50 @@ class Method
      */
     public function call(array $options = [], mixed $block = Block::LATEST): mixed
     {
-        $result = $this->getRequest($this->getContract()->getWeb3()->setExpectsRequest(false), $options, $block);
+        return $this->decode((string) $this->getResult('call', $options, $block)->value());
+    }
 
-        // Decode call result.
-        return $this->decode((string) $result->value());
+    /**
+     * Estimate the gas when method call.
+     *
+     * @param array<mixed> $options
+     * @param mixed        $block
+     *
+     * @return BigInteger
+     */
+    public function estimateGas(array $options = [], mixed $block = Block::LATEST): BigInteger
+    {
+        return $this->getResult('estimateGas', $options, $block)->value();
     }
 
     /**
      * Get the method request.
      *
      * @param Web3         $web3
+     * @param string       $type
      * @param array<mixed> $options
      * @param mixed        $block
      *
-     * @return array<mixed>|Call
+     * @return mixed
      */
-    public function getRequest(Web3 $web3, array $options = [], mixed $block = Block::LATEST): Call|array
+    public function getRequest(Web3 $web3, string $type, array $options = [], mixed $block = Block::LATEST): mixed
     {
-        return $web3->eth()->call(array_merge($options, [
+        return $web3->eth()->{$type}($this->getTransaction($options), $block);
+    }
+
+    /**
+     * Get the method transaction object.
+     *
+     * @param array<mixed> $transaction
+     *
+     * @return array<mixed>
+     */
+    public function getTransaction(array $transaction = []): array
+    {
+        return array_merge($transaction, [
             'to' => $this->contract->getAddress(),
             'data' => $this->getEncodedData(),
-        ]), $block);
+        ]);
     }
 
     /**
@@ -114,5 +137,19 @@ class Method
     public function getContract(): Contract
     {
         return $this->contract;
+    }
+
+    /**
+     * Call the method and get result.
+     *
+     * @param string       $type
+     * @param array<mixed> $options
+     * @param mixed        $block
+     *
+     * @return mixed
+     */
+    protected function getResult(string $type, array $options = [], mixed $block = Block::LATEST): mixed
+    {
+        return $this->getRequest($this->getContract()->getWeb3()->setExpectsRequest(false), $type, $options, $block);
     }
 }
