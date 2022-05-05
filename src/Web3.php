@@ -219,4 +219,12 @@ class Web3
 
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function isExpectsRequest(): bool
+    {
+        return $this->expectsRequest;
+    }
 }
