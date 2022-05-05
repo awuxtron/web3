@@ -61,7 +61,7 @@ class Block extends EthereumType
             return $value;
         }
 
-        return (new Integer)->encode($value, $validate)->stripZeros()->prefixed();
+        return '0x' . ltrim((new Integer)->encode($value, $validate)->stripZeros(), '0');
     }
 
     /**
