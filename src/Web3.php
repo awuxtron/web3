@@ -14,6 +14,7 @@ use InvalidArgumentException;
 
 /**
  * @mixin Methods\Web3
+ *
  * @method Methods\Eth  eth()
  * @method Methods\Net  net()
  * @method Methods\Shh  shh()
@@ -119,8 +120,8 @@ class Web3
      * @template TMethod of Method
      * @phpstan-param class-string<TMethod> $class
      *
-     * @param TMethod                       $class
-     * @param array<mixed>                  $params
+     * @param TMethod      $class
+     * @param array<mixed> $params
      *
      * @return TMethod|array{class-string<TMethod>,Request}
      */
