@@ -100,6 +100,22 @@ abstract class EthereumType
     abstract public function decode(string|Hex $value): mixed;
 
     /**
+     * Validate and return validated value.
+     *
+     * @template T
+     *
+     * @param T $value
+     *
+     * @return T
+     */
+    public function validated(mixed $value): mixed
+    {
+        $this->validate($value);
+
+        return $value;
+    }
+
+    /**
      * Get size of the value for dynamic-type.
      */
     public function getValueSize(mixed $value): ?int
