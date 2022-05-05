@@ -105,6 +105,10 @@ class Ether
      */
     public static function getUnitByValue(BigNumber|string|int|float $value): string
     {
+        if (BigNumber::of($value)->isLessThan(self::UNITS['kwei'])) {
+            $value = (string) BigInteger::of(10)->power(BigNumber::of($value)->toInt());
+        }
+
         $unit = collect(self::UNITS)->filter(function ($val) use ($value) {
             if ((string) $value === '0' && $val === 'noether') {
                 return true;
