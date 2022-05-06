@@ -80,13 +80,8 @@ class LogFilter extends EthereumType
             $this->validate($value);
         }
 
-        if (array_key_exists('fromBlock', $value)) {
-            $value['fromBlock'] = (new Block)->encode($value);
-        }
-
-        if (array_key_exists('toBlock', $value)) {
-            $value['toBlock'] = (new Block)->encode($value);
-        }
+        $value['fromBlock'] = (new Block)->encode($value['fromBlock'] ?? Block::LATEST);
+        $value['toBlock'] = (new Block)->encode($value['toBlock'] ?? Block::LATEST);
 
         if (array_key_exists('address', $value)) {
             if (!is_array($value['address'])) {
