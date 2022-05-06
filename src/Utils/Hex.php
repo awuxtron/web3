@@ -10,6 +10,9 @@ use JsonSerializable;
 
 class Hex implements JsonSerializable
 {
+    public const HEX_TRIM_LEFT = 0;
+    public const HEX_TRIM_RIGHT = 1;
+
     /**
      * Create a new instance of the class.
      *
@@ -342,6 +345,25 @@ class Hex implements JsonSerializable
         $number = BigInteger::fromBytes((string) hex2bin($this->value));
 
         return static::fromInteger($number, true);
+    }
+
+    /**
+     * Trim any characters from hex string.
+     *
+     * @param string   $characters
+     * @param null|int $position
+     *
+     * @return static
+     */
+    public function trim(string $characters, ?int $position = null): static
+    {
+        $using = match ($position) {
+            self::HEX_TRIM_LEFT => 'ltrim',
+            self::HEX_TRIM_RIGHT => 'rtrim',
+            default => 'trim'
+        };
+
+        return $this->newInstance($using($this->value, $characters));
     }
 
     /**
