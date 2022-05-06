@@ -81,7 +81,7 @@ class Integer extends EthereumType
         }
 
         $value = BigInteger::of($value);
-        $hex = Hex::fromInteger($value, $value->isNegative());
+        $hex = Hex::fromInteger($value, $value->isNegative())->trim('0', Hex::HEX_TRIM_LEFT);
 
         if (!$pad) {
             return $hex;
