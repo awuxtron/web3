@@ -16,9 +16,6 @@ class Bytes extends EthereumType
      */
     public function __construct(protected ?int $bytes = null)
     {
-        if ($bytes !== null && ($bytes <= 0 || $bytes > 32)) {
-            throw new InvalidArgumentException('Invalid bytes.');
-        }
     }
 
     /**
@@ -26,7 +23,7 @@ class Bytes extends EthereumType
      */
     public function isDynamic(): bool
     {
-        return $this->bytes === null;
+        return $this->bytes === null || $this->bytes > 32;
     }
 
     /**
@@ -95,7 +92,7 @@ class Bytes extends EthereumType
      */
     public function getValueSize(mixed $value): ?int
     {
-        return $this->bytes == null ? Hex::of($value)->length() : null;
+        return $this->bytes == null || $this->bytes > 32 ? Hex::of($value)->length() : null;
     }
 
     /**
@@ -107,7 +104,7 @@ class Bytes extends EthereumType
      */
     public function getBytesSize(int|BigNumber|null $length = null): BigInteger
     {
-        if ($this->bytes != null) {
+        if ($this->bytes != null && $this->bytes <= 32) {
             return BigInteger::of(32);
         }
 
