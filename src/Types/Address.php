@@ -46,13 +46,19 @@ class Address extends EthereumType
     /**
      * Encodes value to its ABI representation.
      */
-    public function encode(mixed $value, bool $validate = true): Hex
+    public function encode(mixed $value, bool $validate = true, bool $pad = true): Hex
     {
         if ($validate) {
             $this->validate($value);
         }
 
-        return Hex::of($value)->padLeft(32)->lower();
+        $hex = Hex::of($value);
+
+        if ($pad) {
+            $hex = $hex->padLeft(32);
+        }
+
+        return $hex->lower();
     }
 
     /**

@@ -52,10 +52,11 @@ class Block extends EthereumType
      *
      * @param mixed $value
      * @param bool  $validate
+     * @param bool  $pad
      *
      * @return string
      */
-    public function encode(mixed $value, bool $validate = true): string
+    public function encode(mixed $value, bool $validate = true, bool $pad = true): string
     {
         if (static::isBlockString((string) $value)) {
             return $value;

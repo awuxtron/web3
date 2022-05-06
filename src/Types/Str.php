@@ -36,13 +36,13 @@ class Str extends EthereumType
      *
      * @throws HexException
      */
-    public function encode(mixed $value, bool $validate = true): Hex
+    public function encode(mixed $value, bool $validate = true, bool $pad = true): Hex
     {
         if ($validate) {
             $this->validate($value);
         }
 
-        return (new Bytes)->encode(Hex::fromString($value), false);
+        return (new Bytes)->encode(Hex::fromString($value), false, $pad);
     }
 
     /**

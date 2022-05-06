@@ -85,15 +85,20 @@ class Fixed extends EthereumType
     /**
      * Encodes value to its ABI representation.
      */
-    public function encode(mixed $value, bool $validate = true): Hex
+    public function encode(mixed $value, bool $validate = true, bool $pad = true): Hex
     {
         if ($validate) {
             $this->validate($value);
         }
 
         $value = BigDecimal::of($value);
+        $hex = Hex::fromInteger($value->getUnscaledValue(), $value->isNegative());
 
-        return Hex::fromInteger($value->getUnscaledValue(), $value->isNegative())->padLeft(32);
+        if (!$pad) {
+            return $hex;
+        }
+
+        return $hex->padLeft(32);
     }
 
     /**

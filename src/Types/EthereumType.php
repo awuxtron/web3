@@ -92,7 +92,7 @@ abstract class EthereumType
     /**
      * Encodes value to its ABI representation.
      */
-    abstract public function encode(mixed $value, bool $validate = true): mixed;
+    abstract public function encode(mixed $value, bool $validate = true, bool $pad = true): mixed;
 
     /**
      * Decodes ABI encoded string to its Ethereum type.

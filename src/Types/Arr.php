@@ -61,7 +61,7 @@ class Arr extends EthereumType
     /**
      * Encodes value to its ABI representation.
      */
-    public function encode(mixed $value, bool $validate = true): Hex
+    public function encode(mixed $value, bool $validate = true, bool $pad = true): Hex
     {
         if ($validate) {
             $this->validate($value);

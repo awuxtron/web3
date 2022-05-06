@@ -67,10 +67,11 @@ class Transaction extends EthereumType
      *
      * @param mixed $value
      * @param bool  $validate
+     * @param bool  $pad
      *
      * @return array<string, string>
      */
-    public function encode(mixed $value, bool $validate = true): array
+    public function encode(mixed $value, bool $validate = true, bool $pad = true): array
     {
         if ($validate) {
             $this->validate($value);

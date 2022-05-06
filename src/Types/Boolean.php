@@ -33,13 +33,19 @@ class Boolean extends EthereumType
     /**
      * Encodes value to its ABI representation.
      */
-    public function encode(mixed $value, bool $validate = true): Hex
+    public function encode(mixed $value, bool $validate = true, bool $pad = true): Hex
     {
         if ($validate) {
             $this->validate($value);
         }
 
-        return Hex::fromBoolean($value)->padLeft(32);
+        $hex = Hex::fromBoolean($value);
+
+        if (!$pad) {
+            return $hex;
+        }
+
+        return $hex->padLeft(32);
     }
 
     /**

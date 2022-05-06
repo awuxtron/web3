@@ -63,15 +63,15 @@ class Bytes extends EthereumType
     /**
      * Encodes value to its ABI representation.
      */
-    public function encode(mixed $value, bool $validate = true): Hex
+    public function encode(mixed $value, bool $validate = true, bool $pad = true): Hex
     {
         if ($validate) {
             $this->validate($value);
         }
 
-        $pad = static fn (Hex $hex) => $hex->padRight(32);
+        $p = static fn (Hex $hex) => $pad ? $hex->padRight(32) : $hex;
 
-        return Hex::of(implode('', array_map($pad, Hex::of($value)->split(32))));
+        return Hex::of(implode('', array_map($p, Hex::of($value)->split(32))));
     }
 
     /**
