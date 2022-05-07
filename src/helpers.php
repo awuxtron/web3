@@ -84,3 +84,25 @@ if (!function_exists('to_wei')) {
         return Ether::toWei($number, $unit);
     }
 }
+
+if (!function_exists('str_replace_first')) {
+    /**
+     * Replace first occurrence of the search string with the replacement string.
+     *
+     * @param string $search
+     * @param string $replace
+     * @param string $subject
+     *
+     * @return string
+     */
+    function str_replace_first(string $search, string $replace, string $subject): string
+    {
+        $pos = strpos($subject, $search);
+
+        if ($pos !== false) {
+            $subject = substr_replace($subject, $replace, $pos, strlen($search));
+        }
+
+        return $subject;
+    }
+}
