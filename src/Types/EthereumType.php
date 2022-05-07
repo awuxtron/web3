@@ -30,6 +30,7 @@ abstract class EthereumType
         'topics' => Topics::class,
         'transaction' => Transaction::class,
         'tuple' => Tuple::class,
+        'whisper' => Whisper::class,
     ];
 
     /**
