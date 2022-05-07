@@ -195,14 +195,14 @@ class Obj extends EthereumType
 
         foreach ($this->structure as $name => $item) {
             if (!$item['required'] && !isset($value[$name])) {
-                if ($item['default'] === null) {
-                    continue;
-                }
-
                 $value[$name] = $item['default'];
             }
 
-            if ($item['required'] && $value[$name] === null) {
+            if ($value[$name] === null) {
+                if ($item['required']) {
+                    throw new InvalidArgumentException("Element: {$name} is required.");
+                }
+
                 $decoded[$name] = null;
 
                 continue;
