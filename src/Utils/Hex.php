@@ -313,7 +313,7 @@ class Hex implements JsonSerializable
     public function toInteger(): BigInteger
     {
         if ($this->isTwosComplement) {
-            return BigInteger::fromBytes((string) hex2bin($this->value));
+            return BigInteger::fromBytes((string) hex2bin($this->toEvenLength()));
         }
 
         return BigInteger::fromBase($this->value(), 16);
@@ -342,9 +342,17 @@ class Hex implements JsonSerializable
             return $this;
         }
 
-        $number = BigInteger::fromBytes((string) hex2bin($this->value));
+        $number = BigInteger::fromBytes((string) hex2bin($this->toEvenLength()));
 
         return static::fromInteger($number, true);
+    }
+
+    /**
+     * Converts the current hex string to even length.
+     */
+    public function toEvenLength(): static
+    {
+        return $this->newInstance((strlen($this->value) % 2 != 0 ? '0' : '') . $this->value);
     }
 
     /**
