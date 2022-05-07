@@ -43,6 +43,7 @@ class Obj extends EthereumType
 
             foreach ($item as $name => $type) {
                 $default = null;
+                $optional = false;
                 $encoder = $decoder = fn ($v) => $v;
 
                 if (is_array($type)) {
@@ -52,15 +53,18 @@ class Obj extends EthereumType
                     $type = $type[0];
                 }
 
-                $type = trim($type);
-                $optional = false;
+                if (is_string($type)) {
+                    $type = trim($type);
 
-                if (str_ends_with($type, '?')) {
-                    $optional = true;
-                    $type = substr($type, 0, -1);
+                    if (str_ends_with($type, '?')) {
+                        $optional = true;
+                        $type = substr($type, 0, -1);
+                    }
+
+                    $type = trim($type);
                 }
 
-                $type = EthereumType::resolve(trim($type));
+                $type = EthereumType::resolve($type);
 
                 if (is_string($default) && ($type instanceof Arr || $type instanceof Tuple || $type instanceof Obj)) {
                     $default = json_decode(
