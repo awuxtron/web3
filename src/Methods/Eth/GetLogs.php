@@ -3,7 +3,7 @@
 namespace Awuxtron\Web3\Methods\Eth;
 
 use Awuxtron\Web3\Methods\Method;
-use Awuxtron\Web3\Types\LogFilter;
+use Awuxtron\Web3\Types\Filter;
 
 class GetLogs extends Method
 {
@@ -28,6 +28,6 @@ class GetLogs extends Method
             ]);
         }
 
-        return [(new LogFilter)->encode($params[0])];
+        return [(new Filter)->encode($params[0])];
     }
 }
