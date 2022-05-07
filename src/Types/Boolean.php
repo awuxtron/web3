@@ -61,6 +61,10 @@ class Boolean extends EthereumType
      */
     public function decode(mixed $value): bool
     {
+        if (is_bool($value)) {
+            return $value;
+        }
+
         return Hex::of($value)->toBoolean();
     }
 
