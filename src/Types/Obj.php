@@ -202,6 +202,12 @@ class Obj extends EthereumType
                 $value[$name] = $item['default'];
             }
 
+            if ($item['required'] && $value[$name] === null) {
+                $decoded[$name] = null;
+
+                continue;
+            }
+
             $decoded[$name] = $item['decoder']($item['type']->decode($value[$name]));
         }
 
