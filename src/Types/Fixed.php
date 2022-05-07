@@ -104,7 +104,7 @@ class Fixed extends EthereumType
     /**
      * Decodes ABI encoded string to its Ethereum type.
      */
-    public function decode(string|Hex $value): BigDecimal
+    public function decode(mixed $value): BigDecimal
     {
         return Hex::of($value)->toTwosComplement()->toInteger()->toBigDecimal()->toScale($this->decimals);
     }

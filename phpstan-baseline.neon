@@ -6,6 +6,11 @@ parameters:
 			path: src/Contracts/Method.php
 
 		-
+			message: "#^Parameter \\#1 \\$callback of function call_user_func_array expects callable\\(\\)\\: mixed, array\\{Awuxtron\\\\Web3\\\\Types\\\\EthereumType, 'encode'\\|'encodeToArray'\\} given\\.$#"
+			count: 1
+			path: src/Types/Obj.php
+
+		-
 			message: "#^Variable method call on \\$this\\(Awuxtron\\\\Web3\\\\Web3\\)\\.$#"
 			count: 1
 			path: src/Web3.php

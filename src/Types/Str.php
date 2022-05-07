@@ -50,7 +50,7 @@ class Str extends EthereumType
      *
      * @throws HexException
      */
-    public function decode(string|Hex $value): string
+    public function decode(mixed $value): string
     {
         return Hex::of($value)->toString();
     }

@@ -2,7 +2,6 @@
 
 namespace Awuxtron\Web3\Types;
 
-use Awuxtron\Web3\Utils\Hex;
 use Brick\Math\BigInteger;
 use InvalidArgumentException;
 
@@ -15,12 +14,20 @@ abstract class EthereumType
      */
     protected static array $supportedTypes = [
         'address' => Address::class,
+        'arr' => Arr::class,
         'array' => Arr::class,
+        'block' => Block::class,
         'bool' => Boolean::class,
+        'boolean' => Boolean::class,
         'bytes' => Bytes::class,
+        'filter' => Filter::class,
         'fixed' => Fixed::class,
         'int' => Integer::class,
+        'integer' => Integer::class,
+        'obj' => Obj::class,
+        'object' => Obj::class,
         'string' => Str::class,
+        'transaction' => Transaction::class,
         'tuple' => Tuple::class,
     ];
 
@@ -73,7 +80,10 @@ abstract class EthereumType
             $name = static::$supportedTypes[$name];
         }
 
-        return (new $name(...$arguments))->setParamName($paramName);
+        /** @var static $class */
+        $class = new $name(...$arguments);
+
+        return $class->setParamName($paramName);
     }
 
     /**
@@ -97,7 +107,7 @@ abstract class EthereumType
     /**
      * Decodes ABI encoded string to its Ethereum type.
      */
-    abstract public function decode(string|Hex $value): mixed;
+    abstract public function decode(mixed $value): mixed;
 
     /**
      * Validate and return validated value.
@@ -281,5 +291,18 @@ abstract class EthereumType
         }
 
         return [trim($result[0]), $name];
+    }
+
+    /**
+     * Throw an exception or false if $throw set to false.
+     *
+     * @param mixed $exception
+     * @param bool  $throw
+     *
+     * @return bool
+     */
+    protected function throw(mixed $exception, bool $throw): bool
+    {
+        return !$throw ? false : throw $exception;
     }
 }

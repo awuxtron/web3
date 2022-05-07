@@ -93,7 +93,7 @@ class Integer extends EthereumType
     /**
      * Decodes ABI encoded string to its Ethereum type.
      */
-    public function decode(string|Hex $value): BigInteger
+    public function decode(mixed $value): BigInteger
     {
         return Hex::of($value)->toTwosComplement()->toInteger();
     }

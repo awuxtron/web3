@@ -106,7 +106,7 @@ class LogFilter extends EthereumType
     /**
      * Decodes ABI encoded string to its Ethereum type.
      */
-    public function decode(string|Hex $value): mixed
+    public function decode(mixed $value): mixed
     {
         return null;
     }

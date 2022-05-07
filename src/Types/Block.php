@@ -2,9 +2,7 @@
 
 namespace Awuxtron\Web3\Types;
 
-use Awuxtron\Web3\Utils\Hex;
 use Brick\Math\BigInteger;
-use InvalidArgumentException;
 
 class Block extends EthereumType
 {
@@ -40,11 +38,11 @@ class Block extends EthereumType
      */
     public function validate(mixed $value, bool $throw = true): bool
     {
-        if (!static::isBlockString($value)) {
-            return (new Integer)->validate($value, $throw);
+        if (static::isBlockString($value)) {
+            return true;
         }
 
-        return !$throw ? false : throw new InvalidArgumentException('The given value is not a valid block.');
+        return (new Integer)->validate($value, $throw);
     }
 
     /**
@@ -58,6 +56,10 @@ class Block extends EthereumType
      */
     public function encode(mixed $value, bool $validate = true, bool $pad = true): string
     {
+        if ($validate) {
+            $this->validate($value);
+        }
+
         if (static::isBlockString((string) $value)) {
             return $value;
         }
@@ -68,7 +70,7 @@ class Block extends EthereumType
     /**
      * Decodes ABI encoded string to its Ethereum type.
      */
-    public function decode(string|Hex $value): string|BigInteger
+    public function decode(mixed $value): string|BigInteger
     {
         if (static::isBlockString((string) $value)) {
             return $value;

@@ -74,7 +74,7 @@ class Bytes extends EthereumType
     /**
      * Decodes ABI encoded string to its Ethereum type.
      */
-    public function decode(string|Hex $value): Hex
+    public function decode(mixed $value): Hex
     {
         return Hex::of($value);
     }

@@ -71,6 +71,24 @@ class Arr extends EthereumType
     }
 
     /**
+     * Encodes array value.
+     *
+     * @param mixed $value
+     * @param bool  $validate
+     * @param bool  $pad
+     *
+     * @return array<mixed>
+     */
+    public function encodeToArray(mixed $value, bool $validate = true, bool $pad = true): array
+    {
+        if ($validate) {
+            $this->validate($value);
+        }
+
+        return array_map(fn ($v) => $this->type->encode($v, false, $pad), $value);
+    }
+
+    /**
      * Get size of the value for dynamic-type.
      */
     public function getValueSize(mixed $value): ?int
@@ -95,12 +113,16 @@ class Arr extends EthereumType
     /**
      * Decodes ABI encoded string to its Ethereum type.
      *
-     * @param Hex|string $value
+     * @param mixed $value
      *
      * @return array<mixed>
      */
-    public function decode(string|Hex $value): array
+    public function decode(mixed $value): array
     {
+        if (is_array($value)) {
+            return array_map(fn ($v) => $this->type->decode($v), $value);
+        }
+
         $value = Hex::of($value);
 
         if ($this->length != null) {

@@ -52,6 +52,10 @@ class Tuple extends EthereumType
         }
 
         foreach ($this->types as $i => $type) {
+            if (!empty($name = $type->getParamName()) && isset($value[$name])) {
+                $value[$i] = $value[$name];
+            }
+
             if (!$type->validate($value[$i], $throw)) {
                 return false;
             }
@@ -69,18 +73,60 @@ class Tuple extends EthereumType
             $this->validate($value);
         }
 
-        return Coder::encode($this->types, $value, false);
+        return Coder::encode($this->types, array_values($value), false);
+    }
+
+    /**
+     * Encodes array value.
+     *
+     * @param mixed $value
+     * @param bool  $validate
+     * @param bool  $pad
+     *
+     * @return array<mixed>
+     */
+    public function encodeToArray(mixed $value, bool $validate = true, bool $pad = true): array
+    {
+        if ($validate) {
+            $this->validate($value);
+        }
+
+        $result = [];
+
+        foreach ($this->types as $i => $type) {
+            if (!empty($name = $type->getParamName()) && isset($value[$name])) {
+                $i = $name;
+            }
+
+            $result[$name ?: $i] = $type->encode($value[$i], false, $pad);
+        }
+
+        return $result;
     }
 
     /**
      * Decodes ABI encoded string to its Ethereum type.
      *
-     * @param Hex|string $value
+     * @param mixed $value
      *
      * @return array<mixed>
      */
-    public function decode(string|Hex $value): array
+    public function decode(mixed $value): array
     {
+        if (is_array($value)) {
+            $result = [];
+
+            foreach ($this->types as $i => $type) {
+                if (!empty($name = $type->getParamName()) && isset($value[$name])) {
+                    $i = $name;
+                }
+
+                $result[$name ?: $i] = $type->decode($value[$i]);
+            }
+
+            return $result;
+        }
+
         return Coder::decode($this->getTypeWithParamName(), $value);
     }
 

@@ -23,7 +23,7 @@ class Boolean extends EthereumType
      */
     public function validate(mixed $value, bool $throw = true): bool
     {
-        if (!is_bool($value)) {
+        if (!in_array((string) $value, ['true', 'false', '0', '1'], true) && !is_bool($value)) {
             return !$throw ? false : throw new InvalidArgumentException('The value must be of type boolean.');
         }
 
@@ -39,6 +39,14 @@ class Boolean extends EthereumType
             $this->validate($value);
         }
 
+        if (is_string($value)) {
+            $value = match ($value) {
+                'true', '1' => true,
+                'false', '0' => false,
+                default => null
+            };
+        }
+
         $hex = Hex::fromBoolean($value);
 
         if (!$pad) {
@@ -51,7 +59,7 @@ class Boolean extends EthereumType
     /**
      * Decodes ABI encoded string to its Ethereum type.
      */
-    public function decode(string|Hex $value): bool
+    public function decode(mixed $value): bool
     {
         return Hex::of($value)->toBoolean();
     }
