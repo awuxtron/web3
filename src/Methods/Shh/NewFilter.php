@@ -12,6 +12,14 @@ use Brick\Math\BigInteger;
 class NewFilter extends Method
 {
     /**
+     * Get the formatted method result.
+     */
+    public function value(): BigInteger
+    {
+        return (new Integer)->decode($this->raw());
+    }
+
+    /**
      * Get the parameter schemas for this method.
      *
      * @return array<string, array{type: mixed, default: mixed, description: mixed}>
@@ -21,13 +29,5 @@ class NewFilter extends Method
         return [
             'filter' => static::schema('object:to_bytes60?,topics_topics?', []),
         ];
-    }
-
-    /**
-     * Get the formatted method result.
-     */
-    public function value(): BigInteger
-    {
-        return (new Integer)->decode($this->raw());
     }
 }

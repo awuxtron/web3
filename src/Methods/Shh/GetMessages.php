@@ -7,5 +7,4 @@ namespace Awuxtron\Web3\Methods\Shh;
  */
 class GetMessages extends GetFilterChanges
 {
-
 }

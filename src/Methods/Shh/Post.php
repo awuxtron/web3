@@ -11,18 +11,6 @@ use Awuxtron\Web3\Types\Boolean;
 class Post extends Method
 {
     /**
-     * Get the parameter schemas for this method.
-     *
-     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
-     */
-    protected static function getParametersSchema(): array
-    {
-        return [
-            'whisper' => static::schema('whisper', description: 'The whisper post object.'),
-        ];
-    }
-
-    /**
      * Get the formatted method result.
      */
     public function value(): bool
@@ -32,5 +20,17 @@ class Post extends Method
         }
 
         return (new Boolean)->decode($val);
+    }
+
+    /**
+     * Get the parameter schemas for this method.
+     *
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
+     */
+    protected static function getParametersSchema(): array
+    {
+        return [
+            'whisper' => static::schema('whisper', description: 'The whisper post object.'),
+        ];
     }
 }

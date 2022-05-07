@@ -11,6 +11,14 @@ use Awuxtron\Web3\Types\Boolean;
 class SubmitWork extends Method
 {
     /**
+     * Get the formatted method result.
+     */
+    public function value(): bool
+    {
+        return (new Boolean)->decode($this->raw());
+    }
+
+    /**
      * Get the parameter schemas for this method.
      *
      * @return array<string, array{type: mixed, default: mixed, description: mixed}>
@@ -22,13 +30,5 @@ class SubmitWork extends Method
             'header' => static::schema('bytes32', description: 'The header’s pow-hash (256 bits).'),
             'digest' => static::schema('bytes32', description: 'The mix digest (256 bits).'),
         ];
-    }
-
-    /**
-     * Get the formatted method result.
-     */
-    public function value(): bool
-    {
-        return (new Boolean)->decode($this->raw());
     }
 }

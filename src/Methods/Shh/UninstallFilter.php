@@ -11,18 +11,6 @@ use Awuxtron\Web3\Types\Boolean;
 class UninstallFilter extends Method
 {
     /**
-     * Get the parameter schemas for this method.
-     *
-     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
-     */
-    protected static function getParametersSchema(): array
-    {
-        return [
-            'id' => static::schema('int'),
-        ];
-    }
-
-    /**
      * Get the formatted method result.
      */
     public function value(): bool
@@ -32,5 +20,17 @@ class UninstallFilter extends Method
         }
 
         return (new Boolean)->decode($val);
+    }
+
+    /**
+     * Get the parameter schemas for this method.
+     *
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
+     */
+    protected static function getParametersSchema(): array
+    {
+        return [
+            'id' => static::schema('int'),
+        ];
     }
 }
