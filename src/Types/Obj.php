@@ -212,6 +212,10 @@ class Obj extends EthereumType
                 continue;
             }
 
+            if ($item['type'] instanceof Boolean && is_bool($value[$name])) {
+                $value[$name] = $value[$name] ? '1' : '0';
+            }
+
             $decoded[$name] = $item['decoder']($item['type']->decode($value[$name]));
         }
 
