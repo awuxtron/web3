@@ -3,32 +3,31 @@
 namespace Awuxtron\Web3\Methods\Web3;
 
 use Awuxtron\Web3\Methods\Method;
+use Awuxtron\Web3\Types\Bytes;
 use Awuxtron\Web3\Utils\Hex;
-use InvalidArgumentException;
 
+/**
+ * @description Returns Keccak-256 (not the standardized SHA3-256) of the given data.
+ */
 class Sha3 extends Method
 {
-    /**
-     * Returns validated parameters.
-     *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
-     */
-    public static function getParameters(array $params): array
-    {
-        if (!array_key_exists(0, $params) || !Hex::isValid($params[0], false, true)) {
-            throw new InvalidArgumentException(sprintf('"%s" is not a valid hex string.', $params[0] ?? ''));
-        }
-
-        return [Hex::of($params[0])->prefixed()];
-    }
-
     /**
      * Get the formatted method result.
      */
     public function value(): Hex
     {
-        return Hex::of($this->raw());
+        return (new Bytes(32))->encode($this->raw(), pad: false);
+    }
+
+    /**
+     * Get the parameter schemas for this method.
+     *
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
+     */
+    protected static function getParametersSchema(): array
+    {
+        return [
+            'data' => static::schema('bytes', description: 'The data to convert into a SHA3 hash.'),
+        ];
     }
 }

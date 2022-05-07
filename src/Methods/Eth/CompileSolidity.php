@@ -3,25 +3,30 @@
 namespace Awuxtron\Web3\Methods\Eth;
 
 use Awuxtron\Web3\Methods\Method;
-use InvalidArgumentException;
+use Awuxtron\Web3\Utils\Hex;
 
+/**
+ * @description Returns compiled solidity code.
+ */
 class CompileSolidity extends Method
 {
     /**
-     * Returns validated parameters.
-     *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
+     * Get the formatted method result.
      */
-    public static function getParameters(array $params): array
+    public function value(): Hex
     {
-        static::requiredArgs($params, 1);
+        return Hex::of($this->raw());
+    }
 
-        if (!is_string($params[0])) {
-            throw new InvalidArgumentException('Parameter #1  is not a valid string.');
-        }
-
-        return [$params[0]];
+    /**
+     * Get the parameter schemas for this method.
+     *
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
+     */
+    protected static function getParametersSchema(): array
+    {
+        return [
+            'sourcecode' => static::schema('string'),
+        ];
     }
 }

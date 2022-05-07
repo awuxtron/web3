@@ -6,27 +6,28 @@ use Awuxtron\Web3\Methods\Method;
 use Awuxtron\Web3\Types\Bytes;
 use Awuxtron\Web3\Utils\Hex;
 
+/**
+ * @description Creates new message call transaction or a contract creation for signed transactions.
+ */
 class SendRawTransaction extends Method
 {
-    /**
-     * Returns validated parameters.
-     *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
-     */
-    public static function getParameters(array $params): array
-    {
-        static::requiredArgs($params, 1);
-
-        return [(new Bytes)->validated($params[0])->prefixed()];
-    }
-
     /**
      * Get the formatted method result.
      */
     public function value(): Hex
     {
         return (new Bytes(32))->decode($this->raw());
+    }
+
+    /**
+     * Get the parameter schemas for this method.
+     *
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
+     */
+    protected static function getParametersSchema(): array
+    {
+        return [
+            'transaction' => static::schema('bytes', description: 'The signed transaction data.'),
+        ];
     }
 }

@@ -5,30 +5,31 @@ namespace Awuxtron\Web3\Methods\Eth;
 use Awuxtron\Web3\Methods\Method;
 use Awuxtron\Web3\Types\Block;
 use Awuxtron\Web3\Types\Integer;
-use Awuxtron\Web3\Types\Transaction;
 use Brick\Math\BigInteger;
 
+/**
+ * @description Executes a message call or transaction and returns the amount of the gas used.<br />Note: You must specify a from address otherwise you may experience odd behavior.
+ */
 class EstimateGas extends Method
 {
-    /**
-     * Returns validated parameters.
-     *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
-     */
-    public static function getParameters(array $params): array
-    {
-        static::requiredArgs($params, 1);
-
-        return [(new Transaction)->encode($params[0]), (new Block)->encode($params[1] ?? Block::LATEST)];
-    }
-
     /**
      * Get the formatted method result.
      */
     public function value(): BigInteger
     {
         return (new Integer)->decode($this->raw());
+    }
+
+    /**
+     * Get the parameter schemas for this method.
+     *
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
+     */
+    protected static function getParametersSchema(): array
+    {
+        return [
+            'transaction' => static::schema('transaction'),
+            'block' => static::schema('block', Block::LATEST),
+        ];
     }
 }

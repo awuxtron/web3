@@ -2,26 +2,21 @@
 
 namespace Awuxtron\Web3\Methods\Eth;
 
-use Awuxtron\Web3\Methods\Method;
-use Awuxtron\Web3\Types\Block;
-use Awuxtron\Web3\Types\Integer;
-
-class GetTransactionByBlockNumberAndIndex extends Method
+/**
+ * @description Returns information about a transaction by block number and transaction index position.
+ */
+class GetTransactionByBlockNumberAndIndex extends GetTransactionByHash
 {
     /**
-     * Returns validated parameters.
+     * Get the parameter schemas for this method.
      *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    public static function getParameters(array $params): array
+    protected static function getParametersSchema(): array
     {
-        static::requiredArgs($params, 2);
-
         return [
-            (new Block)->encode($params[0]),
-            (new Integer)->encode($params[1])->prefixed(),
+            'block' => static::schema('block'),
+            'position' => static::schema('int', description: 'integer of the transaction index position.'),
         ];
     }
 }

@@ -3,25 +3,69 @@
 namespace Awuxtron\Web3\Methods\Eth;
 
 use Awuxtron\Web3\Methods\Method;
-use Awuxtron\Web3\Types\Boolean;
-use Awuxtron\Web3\Types\Bytes;
+use Awuxtron\Web3\Types\Arr;
+use Awuxtron\Web3\Types\Obj;
+use InvalidArgumentException;
 
+/**
+ * @description Returns information about a block by hash.
+ */
 class GetBlockByHash extends Method
 {
     /**
-     * Returns validated parameters.
+     * Get the method result value.
      *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
-    public static function getParameters(array $params): array
+    public function value(): array
     {
-        static::requiredArgs($params, 1);
+        $value = $this->raw();
 
+        if (empty($value)) {
+            throw new InvalidArgumentException('No block was found.');
+        }
+
+        $structure = [
+            'number' => 'int?',
+            'hash' => 'bytes32?',
+            'mixHash' => 'bytes32?',
+            'parentHash' => 'bytes32',
+            'nonce' => 'bytes8?',
+            'sha3Uncles' => 'bytes32',
+            'logsBloom' => 'bytes256?',
+            'transactionsRoot' => 'bytes32',
+            'stateRoot' => 'bytes32',
+            'receiptsRoot' => 'bytes32',
+            'miner' => 'address',
+            'difficulty' => 'int',
+            'totalDifficulty' => 'int?',
+            'extraData' => 'bytes',
+            'size' => 'int',
+            'gasLimit' => 'int',
+            'gasUsed' => 'int',
+            'timestamp' => 'int',
+            'transactions' => ['bytes32[]?', []],
+        ];
+
+        if (!empty($value['transactions']) && !is_string($value['transactions'][0])) {
+            $structure['transactions'] = [new Arr(GetTransactionByHash::getTransactionObject())];
+        }
+
+        // TODO: uncles.
+
+        return (new Obj($structure))->decode($value);
+    }
+
+    /**
+     * Get the parameter schemas for this method.
+     *
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
+     */
+    protected static function getParametersSchema(): array
+    {
         return [
-            (new Bytes(32))->validated($params[0])->prefixed(),
-            (new Boolean)->validated($params[1] ?? true),
+            'hash' => static::schema('bytes32'),
+            'full' => static::schema('bool', true, 'If true it returns the full transaction objects, if false only the hashes of the transactions.'),
         ];
     }
 }

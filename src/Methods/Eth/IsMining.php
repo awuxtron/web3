@@ -7,6 +7,6 @@ use Awuxtron\Web3\Methods\Method;
 /**
  * @description Returns true if client is actively mining new blocks.
  */
-class Mining extends Method
+class IsMining extends Method
 {
 }

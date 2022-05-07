@@ -2,26 +2,9 @@
 
 namespace Awuxtron\Web3\Methods\Eth;
 
-use Awuxtron\Web3\Methods\Method;
-use InvalidArgumentException;
-
-class CompileLLL extends Method
+/**
+ * @description Returns compiled LLL code.
+ */
+class CompileLLL extends CompileSolidity
 {
-    /**
-     * Returns validated parameters.
-     *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
-     */
-    public static function getParameters(array $params): array
-    {
-        static::requiredArgs($params, 1);
-
-        if (!is_string($params[0])) {
-            throw new InvalidArgumentException('Parameter #1  is not a valid string.');
-        }
-
-        return [$params[0]];
-    }
 }

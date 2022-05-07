@@ -1,26 +1,22 @@
 <?php
 
-namespace Awuxtron\Web3\Methods\Eth;
+namespace Awuxtron\Web3\Methods\Shh;
 
 use Awuxtron\Web3\Methods\Method;
+use Awuxtron\Web3\Types\Boolean;
 
-/**
- * @description Uninstalls a filter with given ID. Should always be called when watch is no longer needed.
- */
-class UninstallFilter extends Method
+class AddToGroup extends Method
 {
     /**
      * Get the formatted method result.
      */
     public function value(): bool
     {
-        $value = $this->raw();
-
-        if ($value === false) {
+        if (($val = $this->raw()) === null) {
             return false;
         }
 
-        return true;
+        return (new Boolean)->decode($val);
     }
 
     /**
@@ -31,7 +27,7 @@ class UninstallFilter extends Method
     protected static function getParametersSchema(): array
     {
         return [
-            'id' => static::schema('int'),
+            'identity' => static::schema('bytes60', description: 'The identity address to add to a group (?).'),
         ];
     }
 }

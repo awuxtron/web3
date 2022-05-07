@@ -2,9 +2,10 @@
 
 namespace Awuxtron\Web3\Methods\Net;
 
-use Awuxtron\Web3\Methods\Method;
-
-class Id extends Method
+/**
+ * @description Returns the current network ID.
+ */
+class GetId extends Version
 {
     /**
      * Get the JSON-RPC method name of this method.

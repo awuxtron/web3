@@ -2,24 +2,23 @@
 
 namespace Awuxtron\Web3\Methods\Eth;
 
-use Awuxtron\Web3\Methods\Method;
 use Awuxtron\Web3\Types\Block;
-use Awuxtron\Web3\Types\Boolean;
 
-class GetBlockByNumber extends Method
+/**
+ * @description Returns information about a block by block number.
+ */
+class GetBlockByNumber extends GetBlockByHash
 {
     /**
-     * Returns validated parameters.
+     * Get the parameter schemas for this method.
      *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    public static function getParameters(array $params): array
+    protected static function getParametersSchema(): array
     {
         return [
-            (new Block)->encode($params[0] ?? Block::LATEST),
-            (new Boolean)->validated($params[1] ?? true),
+            'block' => static::schema('block', Block::LATEST),
+            'full' => static::schema('bool', true, 'If true it returns the full transaction objects, if false only the hashes of the transactions.'),
         ];
     }
 }

@@ -6,6 +6,9 @@ use Awuxtron\Web3\Methods\Method;
 use Awuxtron\Web3\Utils\Hex;
 use Brick\Math\BigInteger;
 
+/**
+ * @description Returns number of peers currently connected to the client.
+ */
 class PeerCount extends Method
 {
     /**

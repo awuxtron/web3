@@ -6,6 +6,9 @@ use Awuxtron\Web3\Methods\Method;
 use Awuxtron\Web3\Utils\Hex;
 use Brick\Math\BigInteger;
 
+/**
+ * @description Returns an object with data about the sync status or false.
+ */
 class Syncing extends Method
 {
     /**

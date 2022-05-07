@@ -1,14 +1,14 @@
 <?php
 
-namespace Awuxtron\Web3\Methods\Eth;
+namespace Awuxtron\Web3\Methods\Shh;
 
 use Awuxtron\Web3\Methods\Method;
 use Awuxtron\Web3\Types\Boolean;
 
 /**
- * @description Used for submitting mining hashrate.
+ * @description Uninstalls a filter with given ID. Should always be called when watch is no longer needed.
  */
-class SubmitHashrate extends Method
+class UninstallFilter extends Method
 {
     /**
      * Get the parameter schemas for this method.
@@ -18,8 +18,7 @@ class SubmitHashrate extends Method
     protected static function getParametersSchema(): array
     {
         return [
-            'hashrate' => static::schema('bytes', description: 'a hexadecimal string representation (32 bytes) of the hash rate.'),
-            'id' => static::schema('bytes32', description: 'a random hexadecimal(32 bytes) ID identifying the client.'),
+            'id' => static::schema('int'),
         ];
     }
 

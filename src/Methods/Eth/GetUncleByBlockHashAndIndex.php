@@ -2,26 +2,21 @@
 
 namespace Awuxtron\Web3\Methods\Eth;
 
-use Awuxtron\Web3\Methods\Method;
-use Awuxtron\Web3\Types\Bytes;
-use Awuxtron\Web3\Types\Integer;
-
-class GetUncleByBlockHashAndIndex extends Method
+/**
+ * @description Returns information about an uncle of a block by hash and uncle index position.
+ */
+class GetUncleByBlockHashAndIndex extends GetBlockByHash
 {
     /**
-     * Returns validated parameters.
+     * Get the parameter schemas for this method.
      *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    public static function getParameters(array $params): array
+    protected static function getParametersSchema(): array
     {
-        static::requiredArgs($params, 2);
-
         return [
-            (new Bytes(32))->validated($params[0])->prefixed(),
-            (new Integer)->encode($params[1])->prefixed(),
+            'hash' => static::schema('bytes32', description: 'The hash of a block.'),
+            'position' => static::schema('int', description: 'The uncle’s index position.'),
         ];
     }
 }

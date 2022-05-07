@@ -3,6 +3,10 @@
 namespace Awuxtron\Web3\Methods;
 
 use Awuxtron\Web3\JsonRPC\Response;
+use Awuxtron\Web3\Types\Boolean;
+use Awuxtron\Web3\Types\EthereumType;
+use Awuxtron\Web3\Types\Str;
+use Awuxtron\Web3\Utils\Hex;
 use InvalidArgumentException;
 
 abstract class Method
@@ -35,7 +39,60 @@ abstract class Method
      */
     public static function getParameters(array $params): array
     {
-        return [];
+        $schemas = static::getParametersSchema();
+
+        if (empty($schemas)) {
+            return [];
+        }
+
+        if (array_is_list($params)) {
+            $schemas = array_values($schemas);
+        }
+
+        foreach ($schemas as $key => $schema) {
+            if (!isset($params[$key]) && $schema['default'] !== null) {
+                $params[$key] = $schema['default'];
+            }
+
+            // Check required param.
+            if (!array_key_exists($key, $params)) {
+                throw new InvalidArgumentException(sprintf(
+                    'Parameter #%s of method %s is required.',
+                    $key,
+                    static::getName()
+                ));
+            }
+
+            foreach ($schema['type'] as $type) {
+                $type = EthereumType::resolve($type);
+
+                if (!$type->validate($params[$key], false)) {
+                    continue;
+                }
+
+                if ($type instanceof Boolean || $type instanceof Str) {
+                    $formatted = $type->validated($params[$key]);
+                } else {
+                    $formatted = $type->encode($params[$key], false, false);
+                }
+
+                if ($formatted instanceof Hex) {
+                    $formatted = $formatted->prefixed();
+                }
+            }
+
+            if (!isset($formatted)) {
+                throw new InvalidArgumentException(sprintf(
+                    'Parameter #%s must be of types: %s.',
+                    $key,
+                    implode('|', $schema['type'])
+                ));
+            }
+
+            $params[$key] = $formatted;
+        }
+
+        return array_values($params);
     }
 
     /**
@@ -55,20 +112,34 @@ abstract class Method
     }
 
     /**
-     * Check required arguments.
+     * Get the parameter schemas for this method.
      *
-     * @param array<mixed> $params
-     * @param int          $count
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    protected static function requiredArgs(array $params, int $count): void
+    protected static function getParametersSchema(): array
     {
-        if (($provided = count($params)) < $count) {
-            throw new InvalidArgumentException(sprintf(
-                'Method %s expects %d parameters, %d provided.',
-                static::getName(),
-                $count,
-                $provided
-            ));
+        return [];
+    }
+
+    /**
+     * The parameter schema.
+     *
+     * @param mixed      $type
+     * @param null|mixed $default
+     * @param string     $description
+     *
+     * @return array{type: mixed, default: mixed, description: mixed}
+     */
+    protected static function schema(mixed $type, mixed $default = null, string $description = ''): array
+    {
+        if (!is_array($type)) {
+            $type = [$type];
         }
+
+        return [
+            'type' => $type,
+            'default' => $default,
+            'description' => $description,
+        ];
     }
 }

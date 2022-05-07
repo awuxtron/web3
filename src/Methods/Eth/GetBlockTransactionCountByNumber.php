@@ -7,25 +7,28 @@ use Awuxtron\Web3\Types\Block;
 use Awuxtron\Web3\Utils\Hex;
 use Brick\Math\BigInteger;
 
+/**
+ * @description Returns the number of transactions in a block matching the given block number.
+ */
 class GetBlockTransactionCountByNumber extends Method
 {
-    /**
-     * Returns validated parameters.
-     *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
-     */
-    public static function getParameters(array $params): array
-    {
-        return [(new Block)->encode($params[0] ?? Block::LATEST)];
-    }
-
     /**
      * Get the method result value.
      */
     public function value(): BigInteger
     {
         return Hex::of($this->raw())->toInteger();
+    }
+
+    /**
+     * Get the parameter schemas for this method.
+     *
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
+     */
+    protected static function getParametersSchema(): array
+    {
+        return [
+            'block' => static::schema('block', Block::LATEST),
+        ];
     }
 }

@@ -3,25 +3,24 @@
 namespace Awuxtron\Web3\Methods\Eth;
 
 use Awuxtron\Web3\Methods\Method;
-use Awuxtron\Web3\Types\Bytes;
+use Awuxtron\Web3\Types\Boolean;
 
+/**
+ * @description Used for submitting a proof-of-work solution.
+ */
 class SubmitWork extends Method
 {
     /**
-     * Returns validated parameters.
+     * Get the parameter schemas for this method.
      *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    public static function getParameters(array $params): array
+    protected static function getParametersSchema(): array
     {
-        static::requiredArgs($params, 3);
-
         return [
-            (new Bytes(8))->encode($params[0])->prefixed(),
-            (new Bytes(32))->encode($params[1])->prefixed(),
-            (new Bytes(32))->encode($params[2])->prefixed(),
+            'nonce' => static::schema('bytes8', description: 'The nonce found (64 bits).'),
+            'header' => static::schema('bytes32', description: 'The header’s pow-hash (256 bits).'),
+            'digest' => static::schema('bytes32', description: 'The mix digest (256 bits).'),
         ];
     }
 
@@ -30,6 +29,6 @@ class SubmitWork extends Method
      */
     public function value(): bool
     {
-        return $this->raw();
+        return (new Boolean)->decode($this->raw());
     }
 }

@@ -7,25 +7,28 @@ use Awuxtron\Web3\Types\Block;
 use Awuxtron\Web3\Types\Integer;
 use Brick\Math\BigInteger;
 
+/**
+ * @description Returns the number of uncles in a block from a block matching the given block number.
+ */
 class GetUncleCountByBlockNumber extends Method
 {
-    /**
-     * Returns validated parameters.
-     *
-     * @param array<mixed> $params
-     *
-     * @return array<mixed>
-     */
-    public static function getParameters(array $params): array
-    {
-        return [(new Block)->encode($params[0] ?? Block::LATEST)];
-    }
-
     /**
      * Get the formatted method result.
      */
     public function value(): BigInteger
     {
         return (new Integer)->decode($this->raw());
+    }
+
+    /**
+     * Get the parameter schemas for this method.
+     *
+     * @return array<string, array{type: mixed, default: mixed, description: mixed}>
+     */
+    protected static function getParametersSchema(): array
+    {
+        return [
+            'block' => static::schema('block', Block::LATEST),
+        ];
     }
 }

@@ -2,18 +2,16 @@
 
 namespace Awuxtron\Web3\Methods\Net;
 
-use Awuxtron\Web3\Methods\Method;
-
 /**
  * @description Returns true if client is actively listening for network connections.
  */
-class Listening extends Method
+class IsListening extends Listening
 {
     /**
-     * Get the formatted method result.
+     * Get the JSON-RPC method name of this method.
      */
-    public function value(): bool
+    public static function getName(): string
     {
-        return $this->raw();
+        return 'net_listening';
     }
 }

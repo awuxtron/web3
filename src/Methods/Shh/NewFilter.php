@@ -1,13 +1,13 @@
 <?php
 
-namespace Awuxtron\Web3\Methods\Eth;
+namespace Awuxtron\Web3\Methods\Shh;
 
 use Awuxtron\Web3\Methods\Method;
 use Awuxtron\Web3\Types\Integer;
 use Brick\Math\BigInteger;
 
 /**
- * @description Creates a filter object, based on filter options, to notify when the state changes (logs).
+ * @description Creates filter to notify, when client receives whisper message matching the filter options.
  */
 class NewFilter extends Method
 {
@@ -19,7 +19,7 @@ class NewFilter extends Method
     protected static function getParametersSchema(): array
     {
         return [
-            'filter' => static::schema('filter', [], 'The filter options.'),
+            'filter' => static::schema('object:to_bytes60?,topics_topics?', []),
         ];
     }
 

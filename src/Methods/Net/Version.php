@@ -1,13 +1,13 @@
 <?php
 
-namespace Awuxtron\Web3\Methods\Web3;
+namespace Awuxtron\Web3\Methods\Net;
 
 use Awuxtron\Web3\Methods\Method;
 
 /**
- * @description Returns the current client version.
+ * @description Returns the current network ID.
  */
-class ClientVersion extends Method
+class Version extends Method
 {
     /**
      * Get the formatted method result.
