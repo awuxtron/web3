@@ -12,13 +12,12 @@ class Filter extends Obj
     public function __construct()
     {
         $prefixed = fn (Hex $hex) => $hex->prefixed();
-        $prefixedArr = fn (array $v) => array_map($prefixed, $v);
 
         parent::__construct([
             'fromBlock' => ['block', Block::LATEST],
             'toBlock' => ['block', Block::LATEST],
-            'address' => ['address[]?', null, $prefixedArr],
-            'topics' => ['bytes32[]?', null, $prefixedArr],
+            'address' => ['address[]?', null, fn (array $v) => array_map($prefixed, $v)],
+            'topics' => ['topics?', null],
             'blockhash' => ['bytes32?', null, $prefixed],
         ]);
     }

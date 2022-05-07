@@ -27,6 +27,7 @@ abstract class EthereumType
         'obj' => Obj::class,
         'object' => Obj::class,
         'string' => Str::class,
+        'topics' => Topics::class,
         'transaction' => Transaction::class,
         'tuple' => Tuple::class,
     ];

@@ -342,7 +342,7 @@ class Hex implements JsonSerializable
             return $this;
         }
 
-        //TODO: Need review, invalid value: 0xc350.
+        // TODO: Need review, invalid value: 0xc350.
         $number = BigInteger::fromBytes((string) hex2bin($this->toEvenLength()));
 
         return static::fromInteger($number, true);
