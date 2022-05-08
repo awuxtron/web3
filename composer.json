@@ -60,7 +60,8 @@
         "analyse": "vendor/bin/phpstan analyse",
         "lint": "vendor/bin/php-cs-fixer fix -v --allow-risky=yes --dry-run",
         "format": "vendor/bin/php-cs-fixer fix -v --allow-risky=yes",
-        "test": "vendor/bin/pest"
+        "test": "vendor/bin/pest",
+        "methods:autocomplete": "@php scripts/MethodsAutocomplete.php"
     },
     "extra": {
         "laravel": {

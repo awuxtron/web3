@@ -86,4 +86,22 @@ class Plain extends EthereumType
     {
         return "plain:{$this->type}";
     }
+
+    /**
+     * Get the valid PHP type.
+     *
+     * @return string
+     */
+    public function getPhpType(): string
+    {
+        return match ($this->type) {
+            'array' => 'array',
+            'boolean' => 'bool',
+            'integer' => 'int',
+            'double' => 'float',
+            'string' => 'string',
+            'object' => 'object',
+            default => $this->type,
+        };
+    }
 }
