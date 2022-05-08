@@ -6,8 +6,6 @@ use Awuxtron\Web3\Methods\Method;
 use Awuxtron\Web3\Types\Bytes;
 use Awuxtron\Web3\Utils\Hex;
 
-// TODO: Need review.
-
 /**
  * @description Creates new message call transaction or a contract creation, if the data field contains code.
  */

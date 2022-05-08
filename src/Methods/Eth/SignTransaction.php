@@ -6,8 +6,6 @@ use Awuxtron\Web3\Methods\Method;
 use Awuxtron\Web3\Types\Bytes;
 use Awuxtron\Web3\Utils\Hex;
 
-// TODO: Need review.
-
 /**
  * @description Signs a transaction. This account needs to be unlocked.
  */
