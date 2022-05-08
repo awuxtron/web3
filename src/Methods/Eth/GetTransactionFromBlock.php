@@ -39,7 +39,7 @@ class GetTransactionFromBlock extends GetTransactionByBlockHashAndIndex
     public static function getParametersSchema(): array
     {
         return [
-            'block' => static::schema(['bytes32', 'block'], Block::LATEST, 'the block number or hash.'),
+            'block' => static::schema(['bytes32', 'block'], description: 'the block number or hash.'),
             'position' => static::schema('int', description: 'integer of the transaction index position.'),
         ];
     }

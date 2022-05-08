@@ -3,7 +3,7 @@
 namespace Awuxtron\Web3\Methods\Eth;
 
 /**
- * Returns a list of addresses owned by client.
+ * @description Returns a list of addresses owned by client.
  */
 class GetAccounts extends Accounts
 {

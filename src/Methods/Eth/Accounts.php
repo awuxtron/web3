@@ -7,7 +7,7 @@ use Awuxtron\Web3\Types\Address;
 use Awuxtron\Web3\Utils\Hex;
 
 /**
- * Returns a list of addresses owned by client.
+ * @description Returns a list of addresses owned by client.
  */
 class Accounts extends Method
 {

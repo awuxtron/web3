@@ -6,6 +6,9 @@ use Awuxtron\Web3\Methods\Method;
 use Awuxtron\Web3\Utils\Hex;
 use Brick\Math\BigInteger;
 
+/**
+ * @description Returns the number of transactions in a block matching the given hash.
+ */
 class GetBlockTransactionCountByHash extends Method
 {
     /**

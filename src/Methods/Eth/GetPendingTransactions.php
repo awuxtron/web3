@@ -2,6 +2,9 @@
 
 namespace Awuxtron\Web3\Methods\Eth;
 
+/**
+ * @description Returns a list of pending transactions.
+ */
 class GetPendingTransactions extends PendingTransactions
 {
     /**

@@ -143,6 +143,10 @@ function getUseStatements(mixed $class): array
         }
     }
 
+    if ($class->getParentClass() instanceof ReflectionClass) {
+        $result = array_merge($result, getUseStatements($class->getParentClass()));
+    }
+
     return $result;
 }
 
@@ -154,9 +158,8 @@ function getUseStatements(mixed $class): array
  * @param ReflectionClass<T> $class
  * @param string             $method
  *
- * @throws ReflectionException
- *
  * @return array<mixed>
+ * @throws ReflectionException
  */
 function getReturnType(ReflectionClass $class, string $method): array
 {
@@ -250,10 +253,19 @@ foreach ($classes as $method) {
 $result = "<?php\n\nnamespace Awuxtron\\Web3\\Methods;\n\n";
 
 foreach ($namespaces as $namespace) {
+    $comments = [
+        'properties' => [],
+        'methods' => [],
+    ];
+
     $result .= "class {$namespace}\n{\n";
 
     // Properties.
     foreach ($properties[$namespace] as $property) {
+        $genCmt = fn ($p) => rtrim(" * @property {$p['return'][0]} \${$p['name']} {$p['description']}\n");
+
+        $comments['properties'][] = $genCmt($property);
+
         $formatter = function ($property) {
             $result = "    /**\n";
 
@@ -276,12 +288,14 @@ foreach ($namespaces as $namespace) {
 
             if (empty(array_filter($properties[$namespace], fn ($p) => $p['name'] == $property['name']))) {
                 $result .= $formatter($property);
+                $comments['properties'][] = $genCmt($property);
             }
         }
     }
 
     // Methods.
     foreach ($methods[$namespace] as $method) {
+        $m = " * @method {$method['return']} {$method['name']}(";
         $result .= "    /**\n";
 
         if (!empty($method['description'])) {
@@ -337,14 +351,42 @@ foreach ($namespaces as $namespace) {
         }
 
         $result .= "    public function {$method['name']}(";
-        $result .= implode(', ', $args);
+        $result .= $b = implode(', ', $args);
         $result .= "): {$method['return']}\n    {\n";
         $result .= '        return (new \\' . Web3::class . '(new \\' . HttpProvider::class . "('http://localhost')))";
         $result .= "->method({$method['return']}::class)";
         $result .= ";\n    }\n\n";
+
+        $comments['methods'][] = rtrim($m . "{$b}) {$method['description']}");
     }
 
     $result .= "}\n\n";
+
+    // Write to method namespace.
+    $cmt = "/**\n";
+    $cmt .= implode(PHP_EOL, $comments['properties']);
+    $cmt .= "\n *\n";
+    $cmt .= implode(PHP_EOL, $comments['methods']);
+    $cmt .= "\n */";
+
+    /** @var class-string $c */
+    $c = "Awuxtron\\Web3\\Methods\\{$namespace}";
+    $class = new ReflectionClass($c);
+    $source = (string) file_get_contents($path = (string) $class->getFileName());
+    $start = (int) $class->getStartLine();
+
+    if (!empty($doc = $class->getDocComment()) && ($pos = strpos($source, $doc)) !== false) {
+        $source = substr_replace($source, '', $pos, strlen($doc));
+        $start -= count(explode(PHP_EOL, $doc)) - 1;
+    }
+
+    $lines = explode(PHP_EOL, $source);
+
+    $result = implode(PHP_EOL, array_slice($lines, 0, $start - 1));
+    $result .= "{$cmt}\n";
+    $result .= implode(PHP_EOL, array_slice($lines, $start - 1));
+
+    file_put_contents($path, $result);
 }
 
 file_put_contents(__DIR__ . '/../.ide-helper.php', $result);

@@ -39,7 +39,7 @@ class GetUncle extends GetUncleByBlockHashAndIndex
     public static function getParametersSchema(): array
     {
         return [
-            'block' => static::schema(['bytes32', 'block'], Block::LATEST, 'The block number or hash.'),
+            'block' => static::schema(['bytes32', 'block'], description: 'The block number or hash.'),
             'position' => static::schema('int', description: 'The uncle’s index position.'),
         ];
     }
