@@ -117,7 +117,17 @@ class Web3
         try {
             $instance = $call($name);
         } catch (InvalidArgumentException) {
-            $instance = $call('get' . ucfirst($name));
+            $fn = 'get' . ucfirst($name);
+
+            if (str_contains($name, '_')) {
+                $parsed = explode('_', $name, 2);
+
+                if (count($parsed) == 2) {
+                    $fn = $parsed[0] . '_get' . ucfirst($parsed[1]);
+                }
+            }
+
+            $instance = $call($fn);
         }
 
         if ($instance instanceof Method) {
