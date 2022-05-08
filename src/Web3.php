@@ -104,13 +104,21 @@ class Web3
      */
     public function __get(string $name): mixed
     {
-        $func = [$this, $name];
+        $call = function ($name) {
+            $func = [$this, $name];
 
-        if (!is_callable($func)) {
-            throw new BadMethodCallException(sprintf('Unable to call method: %s.', $name));
+            if (!is_callable($func)) {
+                throw new BadMethodCallException(sprintf('Unable to call method: %s.', $name));
+            }
+
+            return call_user_func($func);
+        };
+
+        try {
+            $instance = $call($name);
+        } catch (InvalidArgumentException) {
+            $instance = $call('get' . ucfirst($name));
         }
-
-        $instance = call_user_func($func);
 
         if ($instance instanceof Method) {
             return $instance->value();
