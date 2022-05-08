@@ -73,7 +73,13 @@ abstract class Method
                 if ($type instanceof Boolean || $type instanceof Str) {
                     $formatted = $type->validated($params[$key]);
                 } else {
-                    $formatted = $type->encode($params[$key], false, false);
+                    $func = 'encode';
+
+                    if (method_exists($type, 'encodeToArray')) {
+                        $func = 'encodeToArray';
+                    }
+
+                    $formatted = call_user_func_array([$type, $func], [$params[$key], false, false]);
                 }
 
                 if ($formatted instanceof Hex) {
