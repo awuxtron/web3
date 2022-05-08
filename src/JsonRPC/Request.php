@@ -59,7 +59,10 @@ class Request implements JsonSerializable
     /**
      * Determine method and parameters for the current request.
      *
+     * @param string       $method
      * @param array<mixed> $params
+     *
+     * @return static
      */
     public function method(string $method, array $params = []): static
     {
@@ -116,5 +119,29 @@ class Request implements JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->getRequestData();
+    }
+
+    /**
+     * Set the request method.
+     */
+    public function setMethod(string $method): static
+    {
+        $this->method = $method;
+
+        return $this;
+    }
+
+    /**
+     * Set the request params.
+     *
+     * @param array<mixed> $params
+     *
+     * @return static
+     */
+    public function setParams(array $params): static
+    {
+        $this->params = $params;
+
+        return $this;
     }
 }
