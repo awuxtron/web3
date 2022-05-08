@@ -10,10 +10,16 @@ use Awuxtron\Web3\Methods\MethodNamespace;
 use Awuxtron\Web3\Multicall\Multicall;
 use Awuxtron\Web3\Providers\Provider;
 use Awuxtron\Web3\Utils\Hex;
+use BadMethodCallException;
 use InvalidArgumentException;
 
 /**
  * @mixin Methods\Web3
+ *
+ * @property Methods\Eth  $eth
+ * @property Methods\Net  $net
+ * @property Methods\Shh  $shh
+ * @property Methods\Web3 $web3
  *
  * @method Methods\Eth  eth()
  * @method Methods\Net  net()
@@ -87,6 +93,59 @@ class Web3
         $class = array_key_exists($name, $customMethods) ? $customMethods[$name] : $namespace . ucfirst($name);
 
         return $this->method($class, $arguments);
+    }
+
+    /**
+     * Call a web3 method as property.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function __get(string $name): mixed
+    {
+        $func = [$this, $name];
+
+        if (!is_callable($func)) {
+            throw new BadMethodCallException(sprintf('Unable to call method: %s.', $name));
+        }
+
+        $instance = call_user_func($func);
+
+        if ($instance instanceof Method) {
+            return $instance->value();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * Extend the web3 instance or method namespace.
+     *
+     * @param string $name
+     * @param string $value
+     */
+    public function __set(string $name, string $value): void
+    {
+        $namespace = $this->methodNamespace;
+
+        if (str_contains($name, '_')) {
+            [$namespace, $name] = explode('_', $name, 2);
+        }
+
+        if ($namespace == 'web3' && is_subclass_of($value, MethodNamespace::class)) {
+            static::extend($name, $value);
+
+            return;
+        }
+
+        if (!is_subclass_of($value, Method::class)) {
+            throw new InvalidArgumentException(
+                sprintf('The class: %s is not a subclass of %s.', $value, Method::class)
+            );
+        }
+
+        static::$namespaces[$namespace]::extend($name, $value);
     }
 
     /**
