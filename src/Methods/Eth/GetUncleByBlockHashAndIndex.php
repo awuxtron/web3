@@ -12,7 +12,7 @@ class GetUncleByBlockHashAndIndex extends GetBlockByHash
      *
      * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    protected static function getParametersSchema(): array
+    public static function getParametersSchema(): array
     {
         return [
             'hash' => static::schema('bytes32', description: 'The hash of a block.'),

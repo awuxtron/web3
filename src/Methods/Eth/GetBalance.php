@@ -25,7 +25,7 @@ class GetBalance extends Method
      *
      * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    protected static function getParametersSchema(): array
+    public static function getParametersSchema(): array
     {
         return [
             'address' => static::schema('address', description: 'address to check for balance.'),

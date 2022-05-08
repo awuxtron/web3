@@ -173,7 +173,7 @@ abstract class Method
      *
      * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    protected static function getParametersSchema(): array
+    public static function getParametersSchema(): array
     {
         return [];
     }

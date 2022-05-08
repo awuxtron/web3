@@ -27,7 +27,7 @@ class SubmitHashrate extends Method
      *
      * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    protected static function getParametersSchema(): array
+    public static function getParametersSchema(): array
     {
         return [
             'hashrate' => static::schema('bytes', description: 'a hexadecimal string representation (32 bytes) of the hash rate.'),

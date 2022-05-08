@@ -24,7 +24,7 @@ class Sha3 extends Method
      *
      * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    protected static function getParametersSchema(): array
+    public static function getParametersSchema(): array
     {
         return [
             'data' => static::schema('bytes', description: 'The data to convert into a SHA3 hash.'),

@@ -12,7 +12,7 @@ class GetLogs extends GetFilterChanges
      *
      * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    protected static function getParametersSchema(): array
+    public static function getParametersSchema(): array
     {
         return [
             'filter' => static::schema('filter', []),

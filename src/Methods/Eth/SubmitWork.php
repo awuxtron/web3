@@ -23,7 +23,7 @@ class SubmitWork extends Method
      *
      * @return array<string, array{type: mixed, default: mixed, description: mixed}>
      */
-    protected static function getParametersSchema(): array
+    public static function getParametersSchema(): array
     {
         return [
             'nonce' => static::schema('bytes8', description: 'The nonce found (64 bits).'),
