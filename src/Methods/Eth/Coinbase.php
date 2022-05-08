@@ -16,6 +16,6 @@ class Coinbase extends Method
      */
     public function value(): Hex
     {
-        return (new Address)->decode($this->raw());
+        return (new Address)->validated($this->raw());
     }
 }
