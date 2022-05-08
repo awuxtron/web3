@@ -7,5 +7,4 @@ namespace Awuxtron\Web3\Methods\Eth;
  */
 class GetBlockUncleCount extends GetUncleCount
 {
-
 }

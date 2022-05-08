@@ -145,6 +145,30 @@ abstract class Method
     }
 
     /**
+     * Get the request instance.
+     *
+     * @return Request
+     */
+    public function getRequest(): Request
+    {
+        return $this->request;
+    }
+
+    /**
+     * Set the request instance.
+     *
+     * @param Request $request
+     *
+     * @return static
+     */
+    public function setRequest(Request $request): static
+    {
+        $this->request = $request;
+
+        return $this;
+    }
+
+    /**
      * Get the parameter schemas for this method.
      *
      * @return array<string, array{type: mixed, default: mixed, description: mixed}>
@@ -174,29 +198,5 @@ abstract class Method
             'default' => $default,
             'description' => $description,
         ];
-    }
-
-    /**
-     * Get the request instance.
-     *
-     * @return Request
-     */
-    public function getRequest(): Request
-    {
-        return $this->request;
-    }
-
-    /**
-     * Set the request instance.
-     *
-     * @param Request $request
-     *
-     * @return static
-     */
-    public function setRequest(Request $request): static
-    {
-        $this->request = $request;
-
-        return $this;
     }
 }
