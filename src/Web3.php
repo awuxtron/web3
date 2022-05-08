@@ -67,6 +67,7 @@ class Web3
             [$namespace, $method] = explode('_', $name);
 
             if (array_key_exists($namespace, static::$namespaces)) {
+                // @phpstan-ignore-next-line
                 return $this->{$namespace}()->{$method}($arguments);
             }
         }
@@ -145,16 +146,16 @@ class Web3
         }
 
         // Create a new request instance.
-        $request = Request::create()->method(
+        $request = $class::modifyRequest(Request::create()->method(
             $class::getName(),
             $class::getParameters($params)
-        );
+        ));
 
         if ($this->expectsRequest) {
             return [$class, $request];
         }
 
-        return new $class($this->provider->send($request));
+        return (new $class($this->provider->send($request)))->setRequest($request);
     }
 
     /**
@@ -182,8 +183,11 @@ class Web3
         // Call the batch request.
         $responses = $this->provider->batch($requests);
 
-        array_walk($responses, static function (&$response, $key) use ($classes) {
-            $response = new $classes[$key]($response);
+        array_walk($responses, static function (&$response, $key) use ($classes, $requests) {
+            /** @var Method $instance */
+            $instance = new $classes[$key]($response);
+
+            $response = $instance->setRequest($requests[$key]);
         });
 
         // @phpstan-ignore-next-line

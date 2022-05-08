@@ -2,15 +2,24 @@
 
 namespace Awuxtron\Web3\Methods;
 
+use Awuxtron\Web3\JsonRPC\Request;
 use Awuxtron\Web3\JsonRPC\Response;
 use Awuxtron\Web3\Types\Boolean;
 use Awuxtron\Web3\Types\EthereumType;
 use Awuxtron\Web3\Types\Str;
 use Awuxtron\Web3\Utils\Hex;
+use BadMethodCallException;
 use InvalidArgumentException;
 
 abstract class Method
 {
+    /**
+     * The request instance.
+     *
+     * @var Request
+     */
+    protected Request $request;
+
     /**
      * Create a new method instance.
      *
@@ -73,13 +82,19 @@ abstract class Method
                 if ($type instanceof Boolean || $type instanceof Str) {
                     $formatted = $type->validated($params[$key]);
                 } else {
-                    $func = 'encode';
+                    $func = [$type, $m = 'encode'];
 
                     if (method_exists($type, 'encodeToArray')) {
-                        $func = 'encodeToArray';
+                        $func = [$type, $m = 'encodeToArray'];
                     }
 
-                    $formatted = call_user_func_array([$type, $func], [$params[$key], false, false]);
+                    if (!is_callable($func)) {
+                        throw new BadMethodCallException(
+                            sprintf('Unable to call method: %s in class %s.', $m, get_class($type))
+                        );
+                    }
+
+                    $formatted = call_user_func_array($func, [$params[$key], false, false]);
                 }
 
                 if ($formatted instanceof Hex) {
@@ -99,6 +114,18 @@ abstract class Method
         }
 
         return array_values($params);
+    }
+
+    /**
+     * Modify the request instance before send.
+     *
+     * @param Request $request
+     *
+     * @return Request
+     */
+    public static function modifyRequest(Request $request): Request
+    {
+        return $request;
     }
 
     /**
@@ -147,5 +174,29 @@ abstract class Method
             'default' => $default,
             'description' => $description,
         ];
+    }
+
+    /**
+     * Get the request instance.
+     *
+     * @return Request
+     */
+    public function getRequest(): Request
+    {
+        return $this->request;
+    }
+
+    /**
+     * Set the request instance.
+     *
+     * @param Request $request
+     *
+     * @return static
+     */
+    public function setRequest(Request $request): static
+    {
+        $this->request = $request;
+
+        return $this;
     }
 }
