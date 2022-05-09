@@ -51,6 +51,11 @@ class Web3
     protected string $methodNamespace = 'web3';
 
     /**
+     * The multicall address.
+     */
+    protected Hex $multicallAddress;
+
+    /**
      * Create a new Web3 instance.
      *
      * @param Provider $provider
@@ -287,14 +292,25 @@ class Web3
     /**
      * Create a new multicall instance.
      *
-     * @param Hex|string $address
-     * @param bool       $tryAggregate
+     * @param mixed ...$args
      *
-     * @return Multicall
+     * @phpstan-return mixed
+     *
+     * @return array<mixed>|Multicall
      */
-    public function multicall(Hex|string $address, bool $tryAggregate = false): Multicall
+    public function multicall(...$args): mixed
     {
-        return new Multicall($this, $address, $tryAggregate);
+        $args[0] ??= null;
+
+        if (is_bool($args[0])) {
+            return $this->newMulticall(tryAggregate: $args[0]);
+        }
+
+        if (is_array($args[0]) && !empty($args[0]) && count(array_filter($args[0], fn ($v) => $v instanceof Contracts\Method)) == count($args[0])) {
+            return $this->newMulticall()->call(...$args);
+        }
+
+        return $this->newMulticall(...$args);
     }
 
     /**
@@ -315,5 +331,32 @@ class Web3
     public function isExpectsRequest(): bool
     {
         return $this->expectsRequest;
+    }
+
+    /**
+     * Create a new multicall instance.
+     *
+     * @param null|Hex|string $address
+     * @param bool            $tryAggregate
+     *
+     * @return Multicall
+     */
+    public function newMulticall(Hex|string|null $address = null, bool $tryAggregate = false): Multicall
+    {
+        if (empty($address)) {
+            $address = $this->multicallAddress;
+        }
+
+        return new Multicall($this, $address, $tryAggregate);
+    }
+
+    /**
+     * Set multicall address.
+     */
+    public function setMulticallAddress(Hex|string $multicallAddress): static
+    {
+        $this->multicallAddress = Hex::of($multicallAddress);
+
+        return $this;
     }
 }
