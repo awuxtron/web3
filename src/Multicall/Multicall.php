@@ -27,15 +27,20 @@ class Multicall
      * @param Method[]     $methods
      * @param array<mixed> $options
      * @param mixed        $block
+     * @param null|bool    $tryAggregate
      *
      * @return array<mixed>
      */
-    public function call(array $methods, array $options = [], mixed $block = Block::LATEST): array
+    public function call(array $methods, array $options = [], mixed $block = Block::LATEST, ?bool $tryAggregate = null): array
     {
         $keys = array_keys($methods);
         $methods = array_values($methods);
 
-        if ($this->tryAggregate) {
+        if ($tryAggregate === null) {
+            $tryAggregate = $this->tryAggregate;
+        }
+
+        if ($tryAggregate) {
             $result = $this->tryBlockAndAggregate($methods, $options, $block);
         } else {
             $result = $this->aggregate($methods, $options, $block);
