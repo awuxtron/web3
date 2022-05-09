@@ -63,8 +63,10 @@ abstract class EthereumType
             return $type;
         }
 
-        if (array_key_exists($type, static::$resolvedTypes)) {
-            return static::$resolvedTypes[$type];
+        $rawType = $type;
+
+        if (array_key_exists($rawType, static::$resolvedTypes)) {
+            return static::$resolvedTypes[$rawType];
         }
 
         if ($type == '') {
@@ -74,7 +76,7 @@ abstract class EthereumType
         $type = preg_replace('/\s+/', ' ', $type) ?: $type;
 
         if (array_key_exists($type, static::$supportedTypes)) {
-            return static::$resolvedTypes[$type] = new static::$supportedTypes[$type];
+            return static::$resolvedTypes[$rawType] = new static::$supportedTypes[$type];
         }
 
         [$type, $paramName] = static::parseParamName($type);
@@ -95,7 +97,7 @@ abstract class EthereumType
             $name = static::$supportedTypes[$name];
         }
 
-        return static::$resolvedTypes[$type] = (new $name(...$arguments))->setParamName($paramName);
+        return static::$resolvedTypes[$rawType] = (new $name(...$arguments))->setParamName($paramName);
     }
 
     /**
