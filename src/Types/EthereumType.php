@@ -41,6 +41,13 @@ abstract class EthereumType
     protected static string $pattern = '/^(?<type1>address|bool|function|string)$|^((?<type2>bytes|((?<unsigned>u)?(?<type3>int|fixed)))(?<bytes>[\d]|[1-9][\d]|1[\d]{2}|2[0-4][\d]|25[0-6])?(x(?<decimals>[\d]|[1-7][\d]|80))?)$/i';
 
     /**
+     * The array of resolved types.
+     *
+     * @var array<string, self>
+     */
+    protected static array $resolvedTypes = [];
+
+    /**
      * The parameter name.
      *
      * @var null|string
@@ -56,6 +63,10 @@ abstract class EthereumType
             return $type;
         }
 
+        if (array_key_exists($type, static::$resolvedTypes)) {
+            return static::$resolvedTypes[$type];
+        }
+
         if ($type == '') {
             throw new InvalidArgumentException('Invalid type.');
         }
@@ -63,7 +74,7 @@ abstract class EthereumType
         $type = preg_replace('/\s+/', ' ', $type) ?: $type;
 
         if (array_key_exists($type, static::$supportedTypes)) {
-            return new static::$supportedTypes[$type];
+            return static::$resolvedTypes[$type] = new static::$supportedTypes[$type];
         }
 
         [$type, $paramName] = static::parseParamName($type);
@@ -84,10 +95,7 @@ abstract class EthereumType
             $name = static::$supportedTypes[$name];
         }
 
-        /** @var static $class */
-        $class = new $name(...$arguments);
-
-        return $class->setParamName($paramName);
+        return static::$resolvedTypes[$type] = (new $name(...$arguments))->setParamName($paramName);
     }
 
     /**
