@@ -60,7 +60,7 @@ class Web3
      *
      * @param Provider $provider
      */
-    final public function __construct(protected Provider $provider)
+    public function __construct(protected Provider $provider)
     {
     }
 

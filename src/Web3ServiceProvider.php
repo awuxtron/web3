@@ -2,7 +2,6 @@
 
 namespace Awuxtron\Web3;
 
-use Awuxtron\Web3\Multicall\Multicall;
 use Awuxtron\Web3\Types\EthereumType;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
@@ -17,26 +16,11 @@ class Web3ServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/web3.php', 'web3');
 
         $this->app->singleton('web3', function () {
-            $provider = config('web3.provider');
-            $rpcUrl = config('web3.rpc_url');
-
-            if (empty($rpcUrl)) {
-                return null;
-            }
-
-            // @phpstan-ignore-next-line
-            return new Web3(new $provider($rpcUrl));
+            return (new Factory)->setNetwork(config('web3.default'));
         });
 
         $this->app->singleton('web3.multicall', function () {
-            $web3 = $this->app->get('web3');
-            $address = config('web3.multicall.address');
-
-            if (empty($web3) || empty($address)) {
-                return null;
-            }
-
-            return new Multicall($web3, $address, config('web3.multicall.try_aggregate'));
+            return $this->app->get('web3')->multicall();
         });
     }
 

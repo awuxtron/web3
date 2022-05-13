@@ -1,0 +1,96 @@
+<?php
+
+namespace Awuxtron\Web3;
+
+use Awuxtron\Web3\Multicall\Multicall;
+use Awuxtron\Web3\Providers\Provider;
+use Awuxtron\Web3\Utils\Hex;
+use InvalidArgumentException;
+
+class Factory extends Web3
+{
+    /**
+     * Current network.
+     *
+     * @var array{rpc_url: string, multicall_address: Hex|string, provider: Provider|string, try_aggregate?: bool}
+     */
+    protected array $network;
+
+    /**
+     * Create a new Web3 instance.
+     *
+     * @param null|Provider|string $network
+     */
+    public function __construct(Provider|string|null $network = null)
+    {
+        if (is_string($network)) {
+            $this->setNetwork($network);
+        }
+
+        if ($network instanceof Provider) {
+            parent::__construct($network);
+        }
+    }
+
+    /**
+     * Set the network for current instance.
+     *
+     * @param string $name
+     *
+     * @return static
+     */
+    public function setNetwork(string $name): static
+    {
+        $network = config("web3.networks.{$name}");
+
+        if (empty($network)) {
+            throw new InvalidArgumentException("Unsupported network: {$name}.");
+        }
+
+        $this->network = $network;
+
+        $this->setProvider($network['provider']);
+        $this->setMulticallAddress($network['multicall_address']);
+
+        return $this;
+    }
+
+    /**
+     * Set the provider for current instance.
+     *
+     * @param Provider|string $provider
+     *
+     * @return static
+     */
+    public function setProvider(Provider|string $provider): static
+    {
+        if (is_string($provider)) {
+            $p = config("web3.providers.{$provider}");
+
+            if (empty($p) || !is_subclass_of($p['class'], Provider::class)) {
+                throw new InvalidArgumentException("Unsupported provider: {$provider}.");
+            }
+
+            $provider = new $p['class']($this->network['rpc_url'], $p['options'] ?? []);
+        }
+
+        return parent::setProvider($provider);
+    }
+
+    /**
+     * Create a new multicall instance.
+     *
+     * @param null|Hex|string $address
+     * @param bool            $tryAggregate
+     *
+     * @return Multicall
+     */
+    public function newMulticall(Hex|string|null $address = null, bool $tryAggregate = false): Multicall
+    {
+        if (empty($address) && !$tryAggregate) {
+            $tryAggregate = $this->network['try_aggregate'] ?? false;
+        }
+
+        return parent::newMulticall($address, $tryAggregate);
+    }
+}

@@ -3,27 +3,21 @@
 use Awuxtron\Web3\Providers\HttpProvider;
 
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | RPC URL.
-    |--------------------------------------------------------------------------
-    */
-    'rpc_url' => env('WEB3_RPC_URL'),
+    'default' => env('WEB3_NETWORK', 'mainnet'),
 
-    /*
-    |--------------------------------------------------------------------------
-    | Web3 Provider.
-    |--------------------------------------------------------------------------
-    */
-    'provider' => HttpProvider::class,
+    'networks' => [
+        'mainnet' => [
+            'rpc_url' => 'https://mainnet.infura.io/v3/',
+            'provider' => 'http',
+            'multicall_address' => '0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696',
+            'try_aggregate' => false,
+        ],
+    ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Multicall options.
-    |--------------------------------------------------------------------------
-    */
-    'multicall' => [
-        'address' => env('WEB3_MULTICALL_ADDRESS'),
-        'try_aggregate' => env('WEB3_MULTICALL_TRY_AGGREGATE', false),
+    'providers' => [
+        'http' => [
+            'class' => HttpProvider::class,
+            'options' => [],
+        ],
     ],
 ];
