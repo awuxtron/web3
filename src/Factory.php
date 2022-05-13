@@ -12,7 +12,7 @@ class Factory extends Web3
     /**
      * Current network.
      *
-     * @var array{rpc_url: string, multicall_address: Hex|string, provider: Provider|string, try_aggregate?: bool}
+     * @var array{rpc_url: string, multicall: array{address: Hex|string, try_aggregate?: bool}, provider: Provider|string}
      */
     protected array $network;
 
@@ -50,7 +50,7 @@ class Factory extends Web3
         $this->network = $network;
 
         $this->setProvider($network['provider']);
-        $this->setMulticallAddress($network['multicall_address']);
+        $this->setMulticallAddress($network['multicall']['address']);
 
         return $this;
     }
@@ -88,7 +88,7 @@ class Factory extends Web3
     public function newMulticall(Hex|string|null $address = null, bool $tryAggregate = false): Multicall
     {
         if (empty($address) && !$tryAggregate) {
-            $tryAggregate = $this->network['try_aggregate'] ?? false;
+            $tryAggregate = $this->network['multicall']['try_aggregate'] ?? false;
         }
 
         return parent::newMulticall($address, $tryAggregate);
