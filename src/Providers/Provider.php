@@ -8,12 +8,13 @@ use Awuxtron\Web3\JsonRPC\Response;
 abstract class Provider
 {
     /**
-     * Create a new provider instance.
+     * Create a new provider instance from array of options.
      *
-     * @param string       $url
      * @param array<mixed> $options
+     *
+     * @return static
      */
-    abstract public function __construct(string $url, array $options = []);
+    abstract public static function from(array $options): static;
 
     /**
      * Send the request to the provider.

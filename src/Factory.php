@@ -58,20 +58,18 @@ class Factory extends Web3
     /**
      * Set the provider for current instance.
      *
-     * @param Provider|string $provider
+     * @param array<mixed>|Provider $provider
      *
      * @return static
      */
-    public function setProvider(Provider|string $provider): static
+    public function setProvider(Provider|array $provider): static
     {
-        if (is_string($provider)) {
-            $p = config("web3.providers.{$provider}");
-
-            if (empty($p) || !is_subclass_of($p['class'], Provider::class)) {
-                throw new InvalidArgumentException("Unsupported provider: {$provider}.");
+        if (is_array($provider)) {
+            if (empty($provider['class']) || !is_subclass_of($provider['class'], Provider::class)) {
+                throw new InvalidArgumentException("Unsupported provider: {$provider['class']}.");
             }
 
-            $provider = new $p['class']($this->network['rpc_url'], $p['options'] ?? []);
+            $provider = $provider['class']::from($provider['options']);
         }
 
         return parent::setProvider($provider);

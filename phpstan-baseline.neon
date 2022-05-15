@@ -6,6 +6,16 @@ parameters:
 			path: src/Contracts/Method.php
 
 		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 1
+			path: src/Providers/HttpProvider.php
+
+		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 1
+			path: src/Providers/InfuraProvider.php
+
+		-
 			message: "#^Parameter \\#1 \\$callback of function call_user_func_array expects callable\\(\\)\\: mixed, array\\{Awuxtron\\\\Web3\\\\Types\\\\EthereumType, 'encode'\\|'encodeToArray'\\} given\\.$#"
 			count: 1
 			path: src/Types/Obj.php

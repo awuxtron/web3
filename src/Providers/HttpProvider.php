@@ -50,6 +50,18 @@ class HttpProvider extends Provider
     }
 
     /**
+     * Create a new provider instance from array of options.
+     *
+     * @param array<mixed> $options
+     *
+     * @return static
+     */
+    public static function from(array $options): static
+    {
+        return new static($options['rpc_url'], $options['options']);
+    }
+
+    /**
      * Use other HTTP method for current request.
      */
     public function useHttpMethod(string $method): static
@@ -70,24 +82,11 @@ class HttpProvider extends Provider
     }
 
     /**
-     * Send a batch of requests.
-     *
-     * @param Request[] $requests
-     *
-     * @throws HttpProviderException|JsonRpcResponseException
-     *
-     * @return Response[]
+     * Get the HTTP request method.
      */
-    public function batch(array $requests): array
+    public function getRequestMethod(): string
     {
-        $data = array_map(static fn (Request $request) => $request->getRequestData(), $requests);
-
-        $responses = array_map(
-            static fn ($response) => new Response($response),
-            $this->sendRequest(array_values($data))
-        );
-
-        return array_combine(array_keys($data), $responses);
+        return strtoupper($this->requestMethod);
     }
 
     /**
@@ -112,11 +111,24 @@ class HttpProvider extends Provider
     }
 
     /**
-     * Get the HTTP request method.
+     * Send a batch of requests.
+     *
+     * @param Request[] $requests
+     *
+     * @throws HttpProviderException|JsonRpcResponseException
+     *
+     * @return Response[]
      */
-    public function getRequestMethod(): string
+    public function batch(array $requests): array
     {
-        return strtoupper($this->requestMethod);
+        $data = array_map(static fn (Request $request) => $request->getRequestData(), $requests);
+
+        $responses = array_map(
+            static fn ($response) => new Response($response),
+            $this->sendRequest(array_values($data))
+        );
+
+        return array_combine(array_keys($data), $responses);
     }
 
     /**
