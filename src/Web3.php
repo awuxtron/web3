@@ -41,6 +41,11 @@ class Web3
     ];
 
     /**
+     * The provider.
+     */
+    protected Provider $provider;
+
+    /**
      * Determine if the method function will return request instead of call.
      */
     protected bool $expectsRequest = false;
@@ -58,10 +63,16 @@ class Web3
     /**
      * Create a new Web3 instance.
      *
-     * @param Provider $provider
+     * @param Provider|string $provider
+     * @param array<mixed>    $options  the provider options
      */
-    public function __construct(protected Provider $provider)
+    public function __construct(Provider|string $provider, array $options = [])
     {
+        if (is_string($provider)) {
+            $provider = Provider::from(['rpc_url' => $provider, 'options' => $options]);
+        }
+
+        $this->provider = $provider;
     }
 
     /**
@@ -72,7 +83,7 @@ class Web3
      *
      * @return mixed|static
      */
-    public function __call(string $name, array $arguments)
+    public function __call(string $name, array $arguments): mixed
     {
         if (str_contains($name, '_')) {
             [$namespace, $method] = explode('_', $name);
@@ -116,7 +127,7 @@ class Web3
                 throw new BadMethodCallException(sprintf('Unable to call method: %s.', $name));
             }
 
-            return call_user_func($func);
+            return $func();
         };
 
         try {
@@ -172,37 +183,33 @@ class Web3
     }
 
     /**
-     * Register a custom method namespace.
+     * Determines if the method exists.
      *
-     * @phpstan-param class-string<MethodNamespace> $class
+     * @param string $name
+     *
+     * @return bool
      */
-    public static function extend(string $namespace, string $class): void
+    public function __isset(string $name): bool
     {
-        static::$namespaces[$namespace] = $class;
-    }
+        if (array_key_exists($name, static::$namespaces)) {
+            return true;
+        }
 
-    /**
-     * Set the provider for current instance.
-     *
-     * @param Provider $provider
-     *
-     * @return static
-     */
-    public function setProvider(Provider $provider): static
-    {
-        $this->provider = $provider;
+        $namespace = $this->methodNamespace;
 
-        return $this;
-    }
+        if (str_contains($name, '_')) {
+            [$namespace, $name] = explode('_', $name, 2);
+        }
 
-    /**
-     * Get the current provider.
-     *
-     * @return Provider
-     */
-    public function getProvider(): Provider
-    {
-        return $this->provider;
+        $namespace = static::$namespaces[$namespace];
+
+        if (array_key_exists($name, $namespace::getCustomMethods())) {
+            return true;
+        }
+
+        $prefix = rtrim($namespace::getNamespace(), '\\') . '\\';
+
+        return is_subclass_of($prefix . ucfirst($name), Method::class);
     }
 
     /**
@@ -241,6 +248,40 @@ class Web3
     }
 
     /**
+     * Register a custom method namespace.
+     *
+     * @phpstan-param class-string<MethodNamespace> $class
+     */
+    public static function extend(string $namespace, string $class): void
+    {
+        static::$namespaces[$namespace] = $class;
+    }
+
+    /**
+     * Get the current provider.
+     *
+     * @return Provider
+     */
+    public function getProvider(): Provider
+    {
+        return $this->provider;
+    }
+
+    /**
+     * Set the provider for current instance.
+     *
+     * @param Provider $provider
+     *
+     * @return static
+     */
+    public function setProvider(Provider $provider): static
+    {
+        $this->provider = $provider;
+
+        return $this;
+    }
+
+    /**
      * Call a batch of Web3 requests.
      *
      * @param callable(static): array<int|string, mixed> $callback
@@ -267,8 +308,9 @@ class Web3
         $responses = $this->provider->batch($requests);
 
         array_walk($responses, static function (&$response, $key) use ($classes, $requests, $returnValue) {
-            /** @var Method $instance */
             $instance = new $classes[$key]($response);
+
+            assert($instance instanceof Method);
 
             $response = $instance->setRequest($requests[$key]);
 
@@ -318,26 +360,6 @@ class Web3
     }
 
     /**
-     * @param bool $expectsRequest
-     *
-     * @return static
-     */
-    public function setExpectsRequest(bool $expectsRequest): static
-    {
-        $this->expectsRequest = $expectsRequest;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isExpectsRequest(): bool
-    {
-        return $this->expectsRequest;
-    }
-
-    /**
      * Create a new multicall instance.
      *
      * @param null|Hex|string $address
@@ -352,6 +374,26 @@ class Web3
         }
 
         return new Multicall($this, $address, $tryAggregate);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExpectsRequest(): bool
+    {
+        return $this->expectsRequest;
+    }
+
+    /**
+     * @param bool $expectsRequest
+     *
+     * @return static
+     */
+    public function setExpectsRequest(bool $expectsRequest): static
+    {
+        $this->expectsRequest = $expectsRequest;
+
+        return $this;
     }
 
     /**

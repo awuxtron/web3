@@ -49,6 +49,13 @@ class Factory extends Web3
 
         $this->network = $network;
 
+        if (empty($network['provider']['class']) && !empty($network['rpc_url'])) {
+            $network['provider'] = Provider::from([
+                'rpc_url' => $network['rpc_url'],
+                'options' => $network['provider']['options'] ?? [],
+            ]);
+        }
+
         $this->setProvider($network['provider']);
         $this->setMulticallAddress($network['multicall']['address']);
 

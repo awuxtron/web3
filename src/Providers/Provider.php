@@ -4,6 +4,7 @@ namespace Awuxtron\Web3\Providers;
 
 use Awuxtron\Web3\JsonRPC\Request;
 use Awuxtron\Web3\JsonRPC\Response;
+use InvalidArgumentException;
 
 abstract class Provider
 {
@@ -12,9 +13,26 @@ abstract class Provider
      *
      * @param array<mixed> $options
      *
-     * @return static
+     * @return Provider
      */
-    abstract public static function from(array $options): static;
+    public static function from(array $options): Provider
+    {
+        if (empty($options['rpc_url'])) {
+            throw new InvalidArgumentException('rpc_url must be provide.');
+        }
+
+        $scheme = parse_url($options['rpc_url'], PHP_URL_SCHEME);
+
+        if (in_array($scheme, ['http', 'https'], true)) {
+            return HttpProvider::from($options);
+        }
+
+        if (in_array($scheme, ['ws', 'wss'], true)) {
+            return WebSocketProvider::from($options);
+        }
+
+        throw new InvalidArgumentException("Scheme not supported: {$scheme}.");
+    }
 
     /**
      * Send the request to the provider.

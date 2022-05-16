@@ -1,6 +1,5 @@
 <?php
 
-use Awuxtron\Web3\Providers\HttpProvider;
 use Awuxtron\Web3\Providers\InfuraProvider;
 
 return [
@@ -25,12 +24,7 @@ return [
             ],
         ],
         'bsc' => [
-            'provider' => [
-                'class' => HttpProvider::class,
-                'options' => [
-                    'rpc_url' => env('BSC_RPC_URL', 'https://bsc-dataseed.binance.org/'),
-                ],
-            ],
+            'rpc_url' => env('BSC_RPC_URL', 'https://bsc-dataseed.binance.org/'),
             'multicall' => [
                 'address' => '0xC50F4c1E81c873B2204D7eFf7069Ffec6Fbe136D',
                 'try_aggregate' => false,
