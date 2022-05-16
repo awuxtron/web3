@@ -17,6 +17,8 @@
         "guzzlehttp/guzzle": "^7.4",
         "kornrunner/keccak": "^1.1",
         "psr/http-message": "^1.0",
+        "ratchet/pawl": "^0.4.1",
+        "react/async": "^4@dev",
         "simplito/elliptic-php": "^1.0"
     },
     "require-dev": {

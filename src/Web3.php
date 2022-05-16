@@ -244,10 +244,11 @@ class Web3
      * Call a batch of Web3 requests.
      *
      * @param callable(static): array<int|string, mixed> $callback
+     * @param bool                                       $returnValue
      *
-     * @return array<int|string,Method>
+     * @return array<mixed>
      */
-    public function batch(callable $callback): array
+    public function batch(callable $callback, bool $returnValue = false): array
     {
         // Create a new Web3 instance for batch request.
         $web3 = clone $this;
@@ -265,14 +266,17 @@ class Web3
         // Call the batch request.
         $responses = $this->provider->batch($requests);
 
-        array_walk($responses, static function (&$response, $key) use ($classes, $requests) {
+        array_walk($responses, static function (&$response, $key) use ($classes, $requests, $returnValue) {
             /** @var Method $instance */
             $instance = new $classes[$key]($response);
 
             $response = $instance->setRequest($requests[$key]);
+
+            if ($returnValue) {
+                $response = $response->value();
+            }
         });
 
-        // @phpstan-ignore-next-line
         return $responses;
     }
 
