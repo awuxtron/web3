@@ -7,5 +7,4 @@ namespace Awuxtron\Web3\Exceptions;
  */
 class WebSocketProviderException extends ProviderException
 {
-
 }
