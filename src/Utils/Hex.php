@@ -217,7 +217,7 @@ class Hex implements JsonSerializable
      *
      * @param int $length the length of final hex string (in bytes)
      */
-    public function padLeft(int $length, string $pad = null): static
+    public function padLeft(int $length, ?string $pad = null): static
     {
         return $this->pad($length, $pad);
     }

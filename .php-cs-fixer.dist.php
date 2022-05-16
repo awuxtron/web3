@@ -24,6 +24,4 @@ return (new Config)->setFinder($finder)->setRules([
     'date_time_create_from_format_call' => true,
     'declare_parentheses' => true,
     'nullable_type_declaration_for_default_null_value' => true,
-    'simplified_if_return' => true,
-    'simplified_null_return' => true,
 ]);

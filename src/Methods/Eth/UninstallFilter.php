@@ -10,20 +10,6 @@ use Awuxtron\Web3\Methods\Method;
 class UninstallFilter extends Method
 {
     /**
-     * Get the formatted method result.
-     */
-    public function value(): bool
-    {
-        $value = $this->raw();
-
-        if ($value === false) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Get the parameter schemas for this method.
      *
      * @return array<string, array{type: mixed, default: mixed, description: mixed}>
@@ -33,5 +19,13 @@ class UninstallFilter extends Method
         return [
             'id' => static::schema('int'),
         ];
+    }
+
+    /**
+     * Get the formatted method result.
+     */
+    public function value(): bool
+    {
+        return $this->raw() !== false;
     }
 }
