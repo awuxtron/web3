@@ -382,11 +382,11 @@ foreach ($namespaces as $namespace) {
 
     $lines = explode(PHP_EOL, $source);
 
-    $result = implode(PHP_EOL, array_slice($lines, 0, $start - 1));
-    $result .= "{$cmt}\n";
-    $result .= implode(PHP_EOL, array_slice($lines, $start - 1));
+    $result2 = implode(PHP_EOL, array_slice($lines, 0, $start - 1));
+    $result2 .= "{$cmt}\n";
+    $result2 .= implode(PHP_EOL, array_slice($lines, $start - 1));
 
-    file_put_contents($path, $result);
+    file_put_contents($path, $result2);
 }
 
 file_put_contents(__DIR__ . '/../.ide-helper.php', $result);
