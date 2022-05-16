@@ -10,8 +10,7 @@ return [
             'provider' => [
                 'class' => InfuraProvider::class,
                 'options' => [
-                    'scheme' => env('INFURA_SCHEME'),
-                    'network' => env('INFURA_NETWORK'),
+                    'network' => env('INFURA_NETWORK', 'mainnet'),
                     'version' => env('INFURA_VERSION', 'v3'),
                     'id' => env('INFURA_PROJECT_ID'),
                     'secret' => env('INFURA_PROJECT_SECRET'),

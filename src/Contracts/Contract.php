@@ -45,7 +45,7 @@ class Contract
      *
      * @return Method
      */
-    public function __call(string $name, array $arguments)
+    public function __call(string $name, array $arguments): Method
     {
         return $this->method($name, $arguments);
     }
