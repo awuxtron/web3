@@ -72,7 +72,9 @@ class Hex implements JsonSerializable
     public static function fromInteger(BigNumber|string|int|float $number, bool $twosComplement = false): static
     {
         if (str_contains((string) $number, '.')) {
-            throw new InvalidArgumentException("Float number '{$number}' is not supported. If you try to convert a large integer, pass it as string.");
+            throw new InvalidArgumentException(
+                "Float number '{$number}' is not supported. If you try to convert a large integer, pass it as string."
+            );
         }
 
         $number = BigInteger::of($number);

@@ -63,6 +63,28 @@ class JsonInterface implements JsonSerializable
     }
 
     /**
+     * Create a new json interface instance from abi.
+     *
+     * @param array<mixed>|self|string $abi
+     *
+     * @throws JsonException
+     *
+     * @return static
+     */
+    public static function from(self|string|array $abi): static
+    {
+        if ($abi instanceof static) {
+            return $abi;
+        }
+
+        if (is_string($abi)) {
+            $abi = json_decode($abi, true, 512, JSON_THROW_ON_ERROR);
+        }
+
+        return new static($abi);
+    }
+
+    /**
      * Get the constructor.
      *
      * @return null|ConstructorFragment
@@ -70,6 +92,36 @@ class JsonInterface implements JsonSerializable
     public function getConstructor(): ?ConstructorFragment
     {
         return $this->constructor ?? null;
+    }
+
+    /**
+     * Get all error fragments.
+     *
+     * @return ErrorFragment[]
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    /**
+     * Get all event fragments.
+     *
+     * @return EventFragment[]
+     */
+    public function getEvents(): array
+    {
+        return $this->events;
+    }
+
+    /**
+     * Get all function fragments.
+     *
+     * @return FunctionFragment[]
+     */
+    public function getFunctions(): array
+    {
+        return $this->functions;
     }
 
     /**
@@ -185,12 +237,14 @@ class JsonInterface implements JsonSerializable
      */
     public function getFragments(): array
     {
-        return array_values(array_filter([
-            $this->constructor ?? null,
-            ...array_values($this->events),
-            ...array_values($this->errors),
-            ...array_values($this->functions),
-        ]));
+        return array_values(
+            array_filter([
+                $this->constructor ?? null,
+                ...array_values($this->events),
+                ...array_values($this->errors),
+                ...array_values($this->functions),
+            ])
+        );
     }
 
     /**
@@ -209,27 +263,5 @@ class JsonInterface implements JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->toArray();
-    }
-
-    /**
-     * Create a new json interface instance from abi.
-     *
-     * @param array<mixed>|self|string $abi
-     *
-     * @throws JsonException
-     *
-     * @return static
-     */
-    public static function from(self|string|array $abi): static
-    {
-        if ($abi instanceof static) {
-            return $abi;
-        }
-
-        if (is_string($abi)) {
-            $abi = json_decode($abi, true, 512, JSON_THROW_ON_ERROR);
-        }
-
-        return new static($abi);
     }
 }

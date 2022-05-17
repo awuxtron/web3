@@ -25,7 +25,9 @@ class Address extends EthereumType
     public function validate(mixed $value, bool $throw = true): bool
     {
         if (!AddressUtil::isValid($value)) {
-            return !$throw ? false : throw new InvalidArgumentException('The given value is not a valid ethereum address.');
+            return !$throw ? false : throw new InvalidArgumentException(
+                'The given value is not a valid ethereum address.'
+            );
         }
 
         return true;
@@ -66,7 +68,7 @@ class Address extends EthereumType
      */
     public function decode(mixed $value): Hex
     {
-        return Hex::of($value)->stripZeros();
+        return Hex::of($value)->slice(-20);
     }
 
     /**

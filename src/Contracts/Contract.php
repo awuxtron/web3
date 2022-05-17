@@ -64,6 +64,24 @@ class Contract
     }
 
     /**
+     * Get the contract event instance.
+     *
+     * @param null|array<mixed>|string $name    the event name, leave it empty for all events
+     * @param array<mixed>             $options
+     *
+     * @return Event
+     */
+    public function event(array|string|null $name = null, array $options = []): Event
+    {
+        if (is_array($name)) {
+            $options = array_merge($name, $options);
+            $name = null;
+        }
+
+        return new Event($this, $name, $options);
+    }
+
+    /**
      * Get the Web3 instance.
      *
      * @return Web3
@@ -130,5 +148,13 @@ class Contract
         }
 
         return $result;
+    }
+
+    /**
+     * Get the contract json abi interface object.
+     */
+    public function getInterface(): JsonInterface
+    {
+        return $this->interface;
     }
 }
