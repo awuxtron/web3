@@ -5,3 +5,5 @@
 - Contract event
 - Optimize websocket provider
 - Add tests
+- Refactor websocket utils by using request id
+- Json utils

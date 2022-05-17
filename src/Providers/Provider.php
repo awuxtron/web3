@@ -2,8 +2,10 @@
 
 namespace Awuxtron\Web3\Providers;
 
+use Awuxtron\Web3\Exceptions\ProviderException;
 use Awuxtron\Web3\JsonRPC\Request;
 use Awuxtron\Web3\JsonRPC\Response;
+use Awuxtron\Web3\Utils\WebSocket;
 use InvalidArgumentException;
 
 abstract class Provider
@@ -32,6 +34,18 @@ abstract class Provider
         }
 
         throw new InvalidArgumentException("Scheme not supported: {$scheme}.");
+    }
+
+    /**
+     * Keep provider connect and run any actions after connected.
+     *
+     * @param callable(WebSocket): mixed $callback
+     *
+     * @throws ProviderException
+     */
+    public function listening(callable $callback): void
+    {
+        throw new ProviderException('Current provider does not support listening.');
     }
 
     /**

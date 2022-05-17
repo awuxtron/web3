@@ -3,6 +3,7 @@
 namespace Awuxtron\Web3\Providers;
 
 use Awuxtron\Web3\Exceptions\JsonRpcResponseException;
+use Awuxtron\Web3\Exceptions\ProviderException;
 use Awuxtron\Web3\Exceptions\WebSocketProviderException;
 use Awuxtron\Web3\JsonRPC\Request;
 use Awuxtron\Web3\JsonRPC\Response;
@@ -67,9 +68,9 @@ class WebSocketProvider extends Provider
      *
      * @param Request[] $requests
      *
-     * @throws JsonException
      * @throws JsonRpcResponseException
      * @throws Throwable
+     * @throws JsonException
      *
      * @return Response[]
      */
@@ -90,9 +91,9 @@ class WebSocketProvider extends Provider
      *
      * @param Request $request
      *
-     * @throws JsonException
      * @throws Throwable
      * @throws JsonRpcResponseException
+     * @throws JsonException
      *
      * @return Response
      */
@@ -112,6 +113,22 @@ class WebSocketProvider extends Provider
     }
 
     /**
+     * Keep provider connect and run any actions after connected.
+     *
+     * @param callable(\Awuxtron\Web3\Utils\WebSocket): mixed $callback
+     *
+     * @throws ProviderException
+     */
+    public function listening(callable $callback): void
+    {
+        if (PHP_SAPI != 'cli') {
+            throw new ProviderException('Can only listening when script run in console.');
+        }
+
+        $this->onConnected(fn (WebSocket $socket) => $callback(new \Awuxtron\Web3\Utils\WebSocket($socket)));
+    }
+
+    /**
      * Send a single request to websocket server.
      *
      * @param array<mixed> $data
@@ -123,27 +140,29 @@ class WebSocketProvider extends Provider
      */
     protected function sendRequest(array $data): array
     {
-        $result = await($this->onConnected(function (WebSocket $socket) use ($data) {
-            $promise = new Promise(function ($resolve) use ($socket) {
-                $socket->once('message', function (MessageInterface $message) use ($resolve, $socket) {
-                    $resolve($message->getContents());
+        $result = await(
+            $this->onConnected(function (WebSocket $socket) use ($data) {
+                $promise = new Promise(function ($resolve) use ($socket) {
+                    $socket->once('message', function (MessageInterface $message) use ($resolve, $socket) {
+                        $resolve($message->getContents());
 
-                    $socket->close();
+                        $socket->close();
+                    });
                 });
-            });
 
-            $socket->on('close', function ($code = null, $reason = null) {
-                if ($code == 1000) {
-                    return;
-                }
+                $socket->on('close', function ($code = null, $reason = null) {
+                    if ($code == 1000) {
+                        return;
+                    }
 
-                throw new WebSocketProviderException($reason, $code);
-            });
+                    throw new WebSocketProviderException($reason, $code);
+                });
 
-            $socket->send(json_encode($data, JSON_THROW_ON_ERROR));
+                $socket->send(json_encode($data, JSON_THROW_ON_ERROR));
 
-            return $promise;
-        }));
+                return $promise;
+            })
+        );
 
         $result = trim(substr($result, (int) strpos($result, '{')));
 
@@ -182,7 +201,10 @@ class WebSocketProvider extends Provider
      */
     protected function getConnector(): Connector
     {
-        return $this->connector ?? ($this->connector = new Connector($this->getEventLoop(), $this->getReactConnector()));
+        return $this->connector ?? ($this->connector = new Connector(
+            $this->getEventLoop(),
+            $this->getReactConnector()
+        ));
     }
 
     /**
