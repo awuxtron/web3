@@ -15,3 +15,5 @@
 - using guzzle psr7
 - rlp encode decode
 - jsonrpc to library
+- batch request support multidimension by using dot or other methods
+- auto return request when call in function need request
