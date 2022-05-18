@@ -12,3 +12,6 @@
 - Custom log handle
 - Hex util to library
 - Provide/Inject system
+- using guzzle psr7
+- rlp encode decode
+- jsonrpc to library
