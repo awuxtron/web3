@@ -5,6 +5,7 @@ namespace Awuxtron\Web3;
 use Awuxtron\Web3\ABI\JsonInterface;
 use Awuxtron\Web3\Contracts\Contract;
 use Awuxtron\Web3\JsonRPC\Request;
+use Awuxtron\Web3\Methods\CustomMethod;
 use Awuxtron\Web3\Methods\Method;
 use Awuxtron\Web3\Methods\MethodNamespace;
 use Awuxtron\Web3\Multicall\Multicall;
@@ -213,6 +214,16 @@ class Web3
     }
 
     /**
+     * Register a custom method namespace.
+     *
+     * @phpstan-param class-string<MethodNamespace> $class
+     */
+    public static function extend(string $namespace, string $class): void
+    {
+        static::$namespaces[$namespace] = $class;
+    }
+
+    /**
      * Determine or call a Web3 method.
      *
      * @template TMethod of Method
@@ -230,31 +241,29 @@ class Web3
             throw new InvalidArgumentException(sprintf('The method: %s is not supported.', $class));
         }
 
+        if (is_a($class, CustomMethod::class, true)) {
+            return (new $class($this))($params);
+        }
+
         if (!is_a($class, Method::class, true)) {
-            throw new InvalidArgumentException(sprintf('The class: %s must be subclass of class: %s.', $class, Method::class));
+            throw new InvalidArgumentException(
+                sprintf('The class: %s must be subclass of class: %s.', $class, Method::class)
+            );
         }
 
         // Create a new request instance.
-        $request = $class::modifyRequest(Request::create()->method(
-            $class::getName(),
-            $class::getParameters($params)
-        ));
+        $request = $class::modifyRequest(
+            Request::create()->method(
+                $class::getName(),
+                $class::getParameters($params)
+            )
+        );
 
         if ($this->expectsRequest) {
             return [$class, $request];
         }
 
         return (new $class($this->provider->send($request)))->setRequest($request);
-    }
-
-    /**
-     * Register a custom method namespace.
-     *
-     * @phpstan-param class-string<MethodNamespace> $class
-     */
-    public static function extend(string $namespace, string $class): void
-    {
-        static::$namespaces[$namespace] = $class;
     }
 
     /**
@@ -352,7 +361,9 @@ class Web3
             return $this->newMulticall(tryAggregate: $args[0]);
         }
 
-        if (is_array($args[0]) && !empty($args[0]) && count(array_filter($args[0], fn ($v) => $v instanceof Contracts\Method)) == count($args[0])) {
+        if (is_array($args[0]) && !empty($args[0]) && count(
+            array_filter($args[0], fn ($v) => $v instanceof Contracts\Method)
+        ) == count($args[0])) {
             return $this->newMulticall()->call(...$args);
         }
 

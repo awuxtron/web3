@@ -131,7 +131,7 @@ class Contract
                     }
                 }
 
-                $requests[$key] = $method->getRequest($web3, $options, $block);
+                $requests[$key] = $method->getRequest($web3, 'call', $options, $block);
             }
 
             return $requests;
